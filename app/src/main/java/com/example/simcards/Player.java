@@ -1,7 +1,16 @@
 package com.example.simcards;
 
+import java.net.Socket;
 import java.util.ArrayList;
 import java.util.List;
+import org.json.JSONObject;
+
+import io.socket.SocketIO;
+import io.socket.IOCallback;
+import io.socket.IOAcknowledge;
+import io.socket.SocketIOException;
+
+import org.json.JSONException;
 
 /**
  * Created by Lauren on 7/11/2014.
@@ -20,6 +29,10 @@ public class Player {
 
     private String playerName = "";
 
+    private int id;
+
+    SocketIO socket;
+
     public Player() {
         this("Player : " + playerCount);
     }
@@ -31,6 +44,9 @@ public class Player {
         playerCount++;
     }
 
+    public void setID(int id) {
+        this.id = id;
+    }
     public void reset() {
         status = true;
         pile.clear();
