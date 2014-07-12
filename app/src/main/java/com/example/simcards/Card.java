@@ -93,4 +93,14 @@ public class Card {
                 + "\"SUITS\":\"" + suit + "\","
                 + "\"RANK\":\"" + rank + "\"}";
     }
+
+    public boolean equals(Object o) {
+        if (o instanceof Card) {
+            Card c = (Card) o;
+            if (c.getValue() == value && c.getSuit().equals(suit)) {
+                return true;
+            }
+        }
+        return false;
+    }
 }
