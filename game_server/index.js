@@ -6,12 +6,11 @@ var app = express();
 
 var game = require('./game');
 
-app.use(logger('dev'));
 app.use(express.static(path.join(__dirname, 'public')));
 
 var server = require('http').createServer(app).listen(8000);
 
-var io = require('socket.io').listen(8000);
+var io = require('socket.io').listen(server);
 
 io.set('log level', 1);
 

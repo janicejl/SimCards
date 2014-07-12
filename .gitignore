@@ -28,3 +28,8 @@ proguard/
 .project
 .settings
 .idea
+
+
+// node js
+
+game_server/node_modules/
