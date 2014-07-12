@@ -29,7 +29,7 @@
         android:text="Cardacopia"
         android:textSize="20sp"
         android:fontFamily="sans-serif-light"
-        android:onClick="startCardacopia"
+        android:onClick="GoToUsernameForm"
         android:id="@+id/button"
         android:width="300dip"
         android:height="80dip"

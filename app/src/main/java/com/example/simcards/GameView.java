@@ -77,7 +77,7 @@ public class GameView extends View {
     private PopupWindow mPopupWindow;
     private Card mTopCard;
 
-	public GameView(Context context) {
+	public GameView(Context context, String[] names) {
 		super(context);
         // Must load assets first to set card length and height
         loadAssets();
@@ -93,8 +93,8 @@ public class GameView extends View {
         setSystemUiVisibility(uiOptions);
 
         this.setOnTouchListener(new MyTouchListener());
-        mScreenWidth = MainActivity.SCREEN_WIDTH;
-        mScreenHeight = MainActivity.SCREEN_HEIGHT;
+        mScreenWidth = CardacopiaInterface.SCREEN_WIDTH;
+        mScreenHeight = CardacopiaInterface.SCREEN_HEIGHT;
         mCenterRect = new Rect((mScreenWidth / 2)- (DECK_WIDTH / 2),
                 (mScreenHeight / 2) - (DECK_HEIGHT / 2),
                 (mScreenWidth / 2) + (DECK_WIDTH / 2),
@@ -171,7 +171,7 @@ public class GameView extends View {
         mTopPlayerCardCount = cardCounts[1];
         mRightPlayerCardCount = cardCounts[2];
 
-        if (mCurrentGame.hasWon()) {
+        if (mCurrentGame.shouldWeEndTheGame()) {
             showWin();
         }
 
@@ -228,7 +228,6 @@ public class GameView extends View {
     }
 
 	public void onDraw(Canvas canvas) {
-        super.onDraw(canvas);
 		drawBackground(canvas);
         drawCards(canvas);
         drawDeck(canvas);
