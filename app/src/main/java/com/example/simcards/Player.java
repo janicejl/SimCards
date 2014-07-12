@@ -22,6 +22,12 @@ public class Player {
         status = true;
     }
 
+    public void reset() {
+        status = true;
+        pile.clear();
+        points = 0;
+    }
+
     public void addCard(Card card) {
         pile.add(card);
     }
