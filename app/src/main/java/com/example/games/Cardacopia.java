@@ -130,6 +130,11 @@ public class Cardacopia extends Game {
     }
 
     @Override
+    public void winRound(Player winner, ArrayList<Card> cards) {
+        //Do nothing because rounds aren't necessary for this class
+    }
+
+    @Override
     public int compareCards(Card a, Card b) {
         if(a.getValue() > b.getValue()) {
             return a.getValue() - b.getValue();

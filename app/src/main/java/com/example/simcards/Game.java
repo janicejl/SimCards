@@ -62,6 +62,7 @@ public abstract class Game {
 
     public abstract void setNextPlayer();
 
+    public abstract void winRound(Player winner, ArrayList<Card> cards);
     private void realDeal() {
         int total = players.size() * dealNumber;
         if (dealNumber >= 52) {
