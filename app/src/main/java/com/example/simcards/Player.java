@@ -1,5 +1,6 @@
 package com.example.simcards;
 
+import java.net.Socket;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -20,6 +21,8 @@ public class Player {
 
     private String playerName = "";
 
+    private int id;
+
     public Player() {
         this("Player : " + playerCount);
     }
@@ -31,6 +34,9 @@ public class Player {
         playerCount++;
     }
 
+    public void setID(int id) {
+        this.id = id;
+    }
     public void reset() {
         status = true;
         pile.clear();

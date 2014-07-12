@@ -109,7 +109,7 @@ io.connect().on('gameStart', function(data) {
 io.connect().on('playerTurn', function(data) {
 	if (data.player_id == player.id) {
 		console.log(data.player_id + "'s turn");
-		if (player.alive && player.movesLeft > 0) {
+		if (player.alive && player.movesLeft > 2) {
 			player.movesLeft -= 1;
 			console.log(data.player_id + ' has ' + player.movesLeft + 'moves left');
 			player.sendPlayerMove();
