@@ -43,7 +43,7 @@ public class GameView extends View {
                 (mScreenWidth / 2) + (DECK_WIDTH / 2),
                 (mScreenHeight / 2) + (DECK_HEIGHT / 2));
         mCurrentPlayer = new Player();
-        for (int i = 0 ; i < 20 ; i++) {
+        for (int i = 0 ; i < 1 ; i++) {
             mCurrentPlayer.addCard(new Card("10", "spade", 10, 1));
         }
 	}
@@ -51,6 +51,8 @@ public class GameView extends View {
     private void loadAssets() {
         mCardBitmap = BitmapFactory.decodeResource(getResources(), R.drawable.cards);
         mCardBackBitmap = BitmapFactory.decodeResource(getResources(), R.drawable.card_back);
+        Card.card_height = mCardBitmap.getHeight() / 4;
+        Card.card_width = mCardBitmap.getWidth() / 13;
     }
 
 	public void onDraw(Canvas canvas) {
