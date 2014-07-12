@@ -12,4 +12,5 @@ exports.initGame = function(sio, socket) {
 
 function playerConnected() {
   console.log('asdf');
+  gameSocket.emit('secondMessage');
 }
