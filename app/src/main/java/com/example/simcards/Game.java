@@ -105,6 +105,9 @@ public abstract class Game {
      * called.
      */
     public Player nextPlayer() {
+        if (hasWon()) {
+            return null;
+        }
         if (!iterator.hasNext()) {
             iterator = players.iterator();
         }
