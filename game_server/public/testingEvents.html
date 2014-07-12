@@ -17,6 +17,10 @@ var onClick = function() {
 
 var firstButton = document.getElementById('firstButton');
 firstButton.addEventListener('click', onClick);
+
+io.connect().on('secondMessage', function() {
+	console.log('WE GOT THIS BROSKI');
+});
 </script>
 
 </body>
