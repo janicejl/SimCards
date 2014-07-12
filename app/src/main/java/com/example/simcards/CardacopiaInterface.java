@@ -30,8 +30,6 @@ public class CardacopiaInterface extends Activity {
         String[] players = {player1, player2, player3, player4};
 
         getWindow().requestFeature(Window.FEATURE_ACTION_BAR);
-        getActionBar().hide();
-		setContentView(R.layout.activity_cardacopia);
         Display display = getWindowManager().getDefaultDisplay();
         Point size = new Point();
         display.getSize(size);
@@ -46,7 +44,7 @@ public class CardacopiaInterface extends Activity {
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		// Inflate the menu; this adds items to the action bar if it is present.
-		getMenuInflater().inflate(R.menu.main, menu);
+		//getMenuInflater().inflate(R.menu.main, menu);
 		return true;
 	}
 
