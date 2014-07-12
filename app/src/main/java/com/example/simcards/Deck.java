@@ -3,11 +3,11 @@ package com.example.simcards;
 import java.util.ArrayList;
 import java.util.Random;
 
-class Deck {
+public class Deck {
 	ArrayList<Card> deck;
 	int top;
 
-	void shuffle() {
+	public void shuffle() {
 		for (int i = 0; i < 52; i++) {
 			Card temp = deck.get(i);
 			Random random = new Random();
@@ -34,9 +34,13 @@ class Deck {
 		}
 	}
 	
-	Card dealCard() {
+	public Card dealCard() {
 		Card c = deck.get(top);
 		top++;
 		return c;
 	}
+
+    public boolean dealComplete() {
+        return top >= 52;
+    }
 }
