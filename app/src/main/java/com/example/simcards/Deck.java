@@ -20,6 +20,8 @@ public class Deck {
         top = 0;
 	}
 
+    public int size() { return deck.size(); }
+
     public void recycleDiscardToDeck() {
         if (deck.size() > 0) {
             discard.addAll(deck);
@@ -59,7 +61,7 @@ public class Deck {
         mFaceup = c;
     }
 
-    public Card getFaceup { return mFaceup; }
+    public Card getFaceup() { return mFaceup; }
 
     public boolean dealComplete() {
         return top >= 52;
