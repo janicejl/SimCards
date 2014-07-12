@@ -1,4 +1,4 @@
-package com.example.simcards;
+/*package com.example.simcards;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -9,7 +9,7 @@ import io.socket.SocketIOException;
 
 /*
  * Created by J on 7/12/14.
- */
+ *//*
 public class ToServer implements IOCallback {
     private SocketIO socket;
     Player player;
@@ -99,3 +99,4 @@ public class ToServer implements IOCallback {
 }
 
 }
+*/

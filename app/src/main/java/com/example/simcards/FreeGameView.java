@@ -1,4 +1,4 @@
-package com.example.simcards;
+/*package com.example.simcards;
 
 import android.app.Activity;
 import android.content.Context;
@@ -231,7 +231,7 @@ public class FreeGameView extends View {
                     mScreenHeight / 2 - (SCORE_SIZE), p);
         }
     }*/
-
+/*
     private void drawCards(Canvas canvas) {
         switch (mCurrentState) {
             case CHOOSE_PLAYER_CARD:
@@ -387,3 +387,4 @@ public class FreeGameView extends View {
         }
     }
 }
+*/

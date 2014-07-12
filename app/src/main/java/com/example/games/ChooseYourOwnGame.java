@@ -1,4 +1,4 @@
-package com.example.games;
+/*package com.example.games;
 
 import com.example.simcards.Card;
 import com.example.simcards.Deck;
@@ -9,7 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 /**
  * Created by Evy on 12/07/2014.
- */
+ *//*
 public class ChooseYourOwnGame extends Game {
     public ChooseYourOwnGame(List<Player> players, Deck deck) {
         super(players, deck, 0);
@@ -65,3 +65,4 @@ public class ChooseYourOwnGame extends Game {
     @Override
     public Player getWinner(){return activePlayer;}
 }
+*/
