@@ -40,6 +40,14 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.example.simcards.Cardacopia" />
         </activity>
+        <activity
+            android:name=".UsernameForm"
+            android:label="@string/title_activity_username_form"
+            android:parentActivityName=".MainActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.example.simcards.MainActivity" />
+        </activity>
     </application>
 
 </manifest>

@@ -33,7 +33,7 @@ public class GameView extends View {
     private final static int END_STATE = -1;
     private final static boolean DISPLAY_OTHER_SCORES = true;
 
-    private final static int BACKGROUND_COLOR = Color.GREEN;
+    private final static int BACKGROUND_COLOR = Color.parseColor("#002400");
     private final static int SCORE_COLOR = Color.WHITE;
     private final static int SCORE_COLOR_OUTLINE = Color.BLACK;
     private final static float SCORE_SIZE = 80.0f;
