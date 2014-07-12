@@ -7,6 +7,7 @@ import com.example.simcards.Player;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 /**
  * Created by Antonio on 7/12/2014.
@@ -22,8 +23,16 @@ public class HungerUno extends Game {
 
     @Override
     public boolean makeMove(Card card) {
-        mCurrentPlayerIndex += (card.getValue() % 2 == 0 ? card.getSuitVal() + 1 :
-                -1 * (card.getSuitVal() + 1));
+        activePlayer.play(card);
+        int move = 0;
+        if (card.getSuitVal() == 3) { // pick random number from 0 to 2
+            Random random = new Random();
+            move = random.nextInt(3);
+        } else {
+            move = card.getSuitVal() + 1;
+        }
+        mCurrentPlayerIndex += (card.getValue() % 2 == 0 ? move : -1 * move);
+        mCurrentPlayerIndex += 4;
         mCurrentPlayerIndex = mCurrentPlayerIndex % 4;
         activePlayer = players.get(mCurrentPlayerIndex);
         return true;

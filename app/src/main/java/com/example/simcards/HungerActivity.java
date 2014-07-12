@@ -27,5 +27,6 @@ public class HungerActivity extends Activity {
 
         HungerView hungerView = new HungerView(this);
         hungerView.setBackgroundColor(Color.parseColor("#002400"));
+        setContentView(hungerView);
     }
 }
