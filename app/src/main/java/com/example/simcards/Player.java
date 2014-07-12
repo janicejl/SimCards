@@ -19,6 +19,7 @@ public class Player {
 
     public Player() {
         pile = new ArrayList<Card>();
+        status = true;
     }
 
     public void addCard(Card card) {

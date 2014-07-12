@@ -16,7 +16,6 @@ public class Cardacopia extends Game {
     Spades > Hearts > Clubs > Diamonds > Spades
      */
     ArrayList<Card> middlePile = new ArrayList<Card>();
-    ArrayList<Card>
 
     private Card mTopCard;
 

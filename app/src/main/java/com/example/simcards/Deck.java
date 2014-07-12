@@ -18,6 +18,7 @@ public class Deck {
 	}
 	
 	Deck() {
+        deck = new ArrayList<Card>();
 		String ranks[] = {
 				"King", "Queen", "Jack", "Ten", "Nine", "Eight",
 				"Seven", "Six", "Five", "Four", "Three", "Two", "Ace"
@@ -30,7 +31,7 @@ public class Deck {
 		};
 		top = 0;
 		for (int i = 0; i < 52; i++) {
-			deck.set(i, new Card(ranks[i%13], suits[i%4], values[i%13], i%4));
+			deck.add(new Card(ranks[i%13], suits[i%4], values[i%13], i%4));
 		}
 	}
 	

@@ -83,7 +83,11 @@ public class GameView extends View {
         mPopupWindow = createPopupWindow();
 
         List<Player> players = new ArrayList<Player>();
+        for (int i = 0 ; i < 4 ; i++) {
+            players.add(new Player());
+        }
         mCurrentGame = new Cardacopia(players, new Deck(), Game.DEAL_ALL_CARDS);
+        mCurrentGame.deal();
 
         mCurrentPlayer = mCurrentGame.getActivePlayer();
 
@@ -257,8 +261,7 @@ public class GameView extends View {
                         break;
                     }
                     Card c = mCurrentPlayer.getCards().get(index);
-                    if (mCurrentGame.isValidMove(c)) {
-                        mCurrentGame.makeMove(c);
+                    if (mCurrentGame.makeMove(c)) {
                         mCurrentState = WAIT_FOR_NEXT_PLAYER;
                         mPopupWindow = createPopupWindow();
                         mPopupWindow.showAsDropDown(view, mScreenWidth / 2 - (POPUP_WIDTH / 2),
