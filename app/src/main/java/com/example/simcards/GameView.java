@@ -12,6 +12,7 @@ import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.ShapeDrawable;
 import android.graphics.drawable.shapes.RectShape;
+import android.graphics.drawable.shapes.RoundRectShape;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
@@ -108,6 +109,7 @@ public class GameView extends View {
         });
         LinearLayout linearLayout = new LinearLayout(getContext());
         linearLayout.addView(popupButton);
+        //RoundRectShape roundRectShape = new RoundRectShape()
 //        Drawable background = new ShapeDrawable(new RectShape());
 //        linearLayout.setBackground();
         PopupWindow window = new PopupWindow(linearLayout, POPUP_WIDTH, POPUP_HEIGHT);
@@ -268,7 +270,7 @@ public class GameView extends View {
             List<Card> cardList = mCurrentPlayer.getCards();
             for (int i = cardList.size() - 1 ; i >= 0 ; i--) {
                 if (cardList.get(i).containsPoint(p)) {
-                    return i;
+                  return i;
                 }
             }
             return -1;

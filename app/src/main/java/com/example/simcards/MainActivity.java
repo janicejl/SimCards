@@ -3,9 +3,14 @@ package com.example.simcards;
 import android.graphics.Point;
 import android.os.Bundle;
 import android.app.Activity;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
 import android.graphics.Color;
-import android.view.Display;
+import android.graphics.drawable.BitmapDrawable;
 import android.view.Menu;
+
+import android.view.Display;
 
 public class MainActivity extends Activity {
     public static int SCREEN_WIDTH;

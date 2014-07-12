@@ -1,5 +1,6 @@
 package com.example.simcards;
 
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
@@ -8,20 +9,60 @@ import java.util.List;
  * Created by Lauren on 7/11/2014.
  */
 public abstract class Game {
-    private List<Player> players;
-    private Deck deck;
-    private Player activePlayer;
-    private Iterator<Player> iterator;
-    private boolean isActiveGame;
+    public final static int DEAL_ALL_CARDS = -1;
+    protected List<Player> players;
+    protected Deck deck;
+    protected Player activePlayer;
+    protected Iterator<Player> iterator;
+    protected boolean isActiveGame;
+    private int dealNumber;
 
-    public Game(List<Player> players, Deck deck) {
+    public Game(List<Player> players, Deck deck, int dealNumber) {
         this.players = players;
         this.deck = deck;
         iterator = players.iterator();
+        activePlayer = iterator.next();
+        this.dealNumber = dealNumber;
     }
 
+    public void addPlayerToGame(Player p){
+        if (players == null) {
+            players = new ArrayList<Player>();
+        }
+        players.add(p);
+    }
     //Assigns cards to users.
-    abstract void deal();
+    public void deal() {
+        deck.shuffle();
+        if(dealNumber == DEAL_ALL_CARDS) {
+            dealAll();
+        }
+        else {
+            realDeal();
+        }
+    }
+
+    private void dealAll() {
+        while (!deck.dealComplete()) {
+            Card c = deck.dealCard();
+            activePlayer.addCard(c);
+            activePlayer = nextPlayer();
+        }
+    }
+
+    private void realDeal() {
+        int total = players.size() * dealNumber;
+        if (dealNumber >= 52) {
+            dealAll();
+        }
+        else {
+            for (int i = 0; i < total; i++) {
+                Card c = deck.dealCard();
+                activePlayer.addCard(c);
+                activePlayer = nextPlayer();
+            }
+        }
+    }
 
     //Executes one turn in the game;
     public void turn() {
@@ -39,15 +80,15 @@ public abstract class Game {
         }
     }
 
-    abstract void executeTurn();
+    public abstract void executeTurn();
 
     //Determines if active player has won based off of game rules
-    abstract boolean hasWon();
+    public abstract boolean hasWon();
 
     //Called at the end of a turn. Uses game rules to determine if player's status should change
     //NOTE: this should be called after hasWon(). This should assume that the player hasn't won the
     // game.
-    abstract boolean shouldPlayerContinue();
+    public abstract boolean shouldPlayerContinue();
 
     public Player getActivePlayer() {
         return activePlayer;
