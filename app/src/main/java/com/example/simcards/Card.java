@@ -22,9 +22,14 @@ public class Card {
 		return rank;
 	}
 	
-	String getSuit() {
+	public String getSuit() {
 		return suit;
 	}
+	
+	public int getValue() {
+		return value;
+	}
+	
 	int getX() {
 		return x_pos;
 	}
@@ -37,21 +42,21 @@ public class Card {
      * This gets the rectangle for the actual image in the bitmap
      */
 	Rect getBox() {
-		return new Rect(x_pos, y_pos, x_pos + card_width, y_pos + card_height);
+		return new Rect(0, 0, 98, 73);
 	}
 	
 	void setValue(int aValue) {
 		value = aValue;
 	}
 	
-	Card() {}
-	Card(String rk, String st, int value, int suitVal) {
+	Card(String rk, String st, int val, int suitVal) {
 		rank = rk;
 		suit = st;
+		value = val;
 		suits_picture_position = suitVal;
 
-		x_pos = card_width * (value - 1);
-		y_pos = card_height * suits_picture_position;
+		x_pos = 0;
+		y_pos = 0;
 	}
 
     /**
@@ -69,7 +74,7 @@ public class Card {
         mCurrentPositionRect = new Rect(positionX, positionY,
                 positionX + card_width, positionY + card_height);
     }
-	
+
 	void print() {
 		System.out.println(rank + " of " + suit);
 	}
