@@ -55,9 +55,6 @@ public class GameView extends View {
     private final static int[] PLAYER_COLORS = new int[] {Color.BLUE, Color.GREEN, Color.RED,
             Color.BLACK};
     private final static String LOSER_POPUP_MSG = "You lost, I am sorry :(";
-    private final static String NEXT_PLAYER_POPUP_MSG = "Next player please!!!";
-    private final static String WINNING_STRING = "Congrats for winning!!";
-    private final static String PROCEED_MENU_STRING = "Proceed to menu";
     private final static long WIN_DELAY = 2000;
 
     private Cardacopia mCurrentGame;
@@ -86,7 +83,7 @@ public class GameView extends View {
 
         setViewVariables();
 
-        setGameVariables();
+        setGameVariables(names);
 	}
 
     private void setViewVariables() {
@@ -101,16 +98,14 @@ public class GameView extends View {
                 (mScreenHeight / 2) - (DECK_HEIGHT / 2),
                 (mScreenWidth / 2) + (DECK_WIDTH / 2),
                 (mScreenHeight / 2) + (DECK_HEIGHT / 2));
-
-        mPopupWindow = createPopupWindow(NEXT_PLAYER_POPUP_MSG, true);
     }
 
-    private void setGameVariables() {
+    private void setGameVariables(String[] names) {
         mCurrentState = CHOOSE_PLAYER_CARD;
 
         List<Player> players = new ArrayList<Player>();
         for (int i = 0 ; i < 4 ; i++) {
-            players.add(new Player());
+            players.add(new Player(names[i]));
         }
         mCurrentGame = new Cardacopia(players, new Deck(), Game.DEAL_ALL_CARDS);
         mCurrentGame.deal();
@@ -188,7 +183,7 @@ public class GameView extends View {
     private void showWin() {
         mCurrentState = END_STATE;
         Button popupButton = new Button(getContext());
-        popupButton.setText("Winner is !!!!");
+        popupButton.setText("Winner is " + mCurrentGame.getWinner().getName() + "!!!");
         popupButton.setHeight(POPUP_HEIGHT - POPUP_BUTTON_BUFFER);
         popupButton.setWidth(POPUP_WIDTH - POPUP_BUTTON_BUFFER);
         popupButton.setOnTouchListener(new OnTouchListener() {
@@ -210,7 +205,8 @@ public class GameView extends View {
 //        linearLayout.setBackground(background);
         PopupWindow window = new PopupWindow(linearLayout, POPUP_WIDTH, POPUP_HEIGHT);
         window.setContentView(linearLayout);
-        window.showAsDropDown(this, mScreenWidth / 2, -1 * mScreenHeight / 2);
+        window.showAsDropDown(this, mScreenWidth / 2 - (POPUP_WIDTH / 2),
+                -1 * mScreenHeight / 2 - (POPUP_HEIGHT / 2));
         mCurrentState = END_STATE;
     }
 
@@ -359,7 +355,8 @@ public class GameView extends View {
                         postInvalidate();
                         mCurrentState = WAIT_FOR_NEXT_PLAYER;
                         mTopCard = c;
-                        mPopupWindow = createPopupWindow(NEXT_PLAYER_POPUP_MSG, true);
+                        mPopupWindow =
+                                createPopupWindow(mCurrentGame.getNextPlayerName() + " is up", true);
                         mPopupWindow.showAsDropDown(view, mScreenWidth / 2 - (POPUP_WIDTH / 2),
                                 -1 * mScreenHeight / 2 - (POPUP_HEIGHT / 2));
                     }

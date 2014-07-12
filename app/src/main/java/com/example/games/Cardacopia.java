@@ -99,6 +99,12 @@ public class Cardacopia extends Game {
         return compareCards(c, mTopCard) > 0;
     }
 
+    public String getNextPlayerName() {
+        int index = players.indexOf(activePlayer);
+        index = (index + 1) % 4;
+        return players.get(index).getName();
+    }
+
     @Override
     public boolean makeMove(Card c) {
         if (mTopCard == null) {
