@@ -29,7 +29,7 @@ public class CardacopiaInterface extends Activity {
         SCREEN_HEIGHT = size.y;
         SCREEN_WIDTH = size.x;
 		
-		GameView gameview = new GameView(this);
+		GameView gameview = new GameView(this, null);
 		gameview.setBackgroundColor(Color.parseColor("#002400"));
 		setContentView(gameview);
 	}

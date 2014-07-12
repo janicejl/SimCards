@@ -77,7 +77,7 @@ public class GameView extends View {
     private PopupWindow mPopupWindow;
     private Card mTopCard;
 
-	public GameView(Context context) {
+	public GameView(Context context, String[] names) {
 		super(context);
         // Must load assets first to set card length and height
         loadAssets();
@@ -171,7 +171,7 @@ public class GameView extends View {
         mTopPlayerCardCount = cardCounts[1];
         mRightPlayerCardCount = cardCounts[2];
 
-        if (mCurrentGame.hasWon()) {
+        if (mCurrentGame.shouldWeEndTheGame()) {
             showWin();
         }
 
@@ -228,7 +228,9 @@ public class GameView extends View {
     }
 
 	public void onDraw(Canvas canvas) {
-        super.onDraw(canvas);
+        int uiOptions = View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
+                | View.SYSTEM_UI_FLAG_FULLSCREEN;
+        setSystemUiVisibility(uiOptions);
 		drawBackground(canvas);
         drawCards(canvas);
         drawDeck(canvas);
