@@ -53,11 +53,11 @@ public class GameView extends View {
         public boolean onTouch(View view, MotionEvent motionEvent) {
             Point p;
             p = new Point((int) motionEvent.getX(), (int) motionEvent.getY());
-            //if (mTestCard.containsPoint(p)) {
+            if (mTestCard.containsPoint(p)) {
                 Toast toast = Toast.makeText(getContext(), "Touched Card + " + p.x + " " + p.y,
                         Toast.LENGTH_SHORT);
                 toast.show();
-            //}
+            }
             return true;
         }
     }

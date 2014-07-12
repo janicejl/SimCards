@@ -15,6 +15,9 @@ public class Card {
 	
 	int x_pos;
 	int y_pos;
+
+    private int mGlobalPositionX;
+    private int mGlobalPositionY;
 	
 	String getRank() {
 		return rank;
@@ -46,24 +49,51 @@ public class Card {
 	
 	Card() {}
 	Card(String rk, String st, int val, int suitVal) {
-		rank = rk;
-		suit = st;
-		value = val;
-		suits_picture_position = suitVal;
-		
-		x_pos = card_width * (value - 1);
-		y_pos = card_height * suits_picture_position;
+		this(rk, st, val, suitVal, 0, 0);
 	}
+
+    /**
+     * Constructor containing the global positions for the cards
+     */
+    public Card(String rk, String st, int val, int suitVal, int positionX, int positionY) {
+        rank = rk;
+        suit = st;
+        value = val;
+        suits_picture_position = suitVal;
+
+        x_pos = card_width * (value - 1);
+        y_pos = card_height * suits_picture_position;
+
+        mGlobalPositionX = positionX;
+        mGlobalPositionY = positionY;
+    }
 	
 	void print() {
 		System.out.println(rank + " of " + suit);
 	}
 
+    public int getGlobalPositionX() {
+        return mGlobalPositionX;
+    }
+
+    public int getGlobalPositionY() {
+        return mGlobalPositionY;
+    }
+
+    public void setGlobalPositionX(int x) {
+        mGlobalPositionX = x;
+    }
+
+    public void setGlobalPositionY(int y) {
+        mGlobalPositionY = y;
+    }
+
     /**
      * Used for touch detection, will return true if the touch occurred on this card
      */
     public boolean containsPoint(Point p) {
-        Rect temp = new Rect(x_pos, y_pos, x_pos + card_width, y_pos + card_height);
+        Rect temp = new Rect(mGlobalPositionX, mGlobalPositionY, mGlobalPositionX + card_width,
+                mGlobalPositionY+ card_height);
         return temp.contains(p.x, p.y);
     }
 }
