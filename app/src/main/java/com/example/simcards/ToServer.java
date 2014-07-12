@@ -1,23 +1,31 @@
-/*package com.example.simcards;
+package com.example.simcards;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import io.socket.IOAcknowledge;
 import io.socket.IOCallback;
+import io.socket.SocketIO;
 import io.socket.SocketIOException;
 
-*//**
- * Created by J on 7/12/14.
- *//*
 public class ToServer implements IOCallback {
     private SocketIO socket;
-    Player player;
+    SocketActivity socketActivity;
+    int socketProvidedID;
+    GameView gameview;
 
-    public ToServer(Player p) throws Exception {
+    public ToServer(SocketActivity s) throws Exception {
         socket = new SocketIO();
-        this.player = p;
         socket.connect("http://sim_card_game_server.nodejitsu.com", this);
+        this.socketActivity = s;
+    }
+
+    public SocketIO getSocket() {
+        return socket;
+    }
+
+    public void setGameView(GameView gv) {
+        gameview = gv;
     }
 
     @Override
@@ -46,11 +54,9 @@ public class ToServer implements IOCallback {
             int player_id = ((JSONObject)objects[0]).getInt("player_id");
 
             if (s.equals("connected")) {
-                player.setID(player_id);
+                socketProvidedID = player_id;
             } else if (s.equals("gameFull")) {
-                if (player.getId() == 0) {
-                    player.sendDealtCards();
-                }
+                socketActivity.createGameView(socket, socketProvidedID);
             } else if (s.equals("gameStart")) {
                 player.setStatus(true);
             } else if (s.equals("playerTurn")) {
@@ -96,4 +102,4 @@ public class ToServer implements IOCallback {
         System.out.println("error happened.");
         socketIOException.printStackTrace();
     }
-}*/
+}
