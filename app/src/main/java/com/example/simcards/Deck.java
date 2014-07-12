@@ -6,9 +6,11 @@ import java.util.Random;
 public class Deck {
 	ArrayList<Card> deck;
 	int top;
+    ArrayList<Card> discard;
+    private Card mFaceup;
 
 	public void shuffle() {
-		for (int i = 0; i < 52; i++) {
+		for (int i = 0; i < deck.size(); i++) {
 			Card temp = deck.get(i);
 			Random random = new Random();
 			int ran = random.nextInt(52);
@@ -17,9 +19,19 @@ public class Deck {
 		}
         top = 0;
 	}
+
+    public void recycleDiscardToDeck() {
+        if (deck.size() > 0) {
+            discard.addAll(deck);
+        }
+        discard.clear();
+        shuffle();
+        mFaceup = null;
+    }
 	
 	Deck() {
         deck = new ArrayList<Card>();
+        discard = new ArrayList<Card>();
 		String ranks[] = {
 				"King", "Queen", "Jack", "Ten", "Nine", "Eight",
 				"Seven", "Six", "Five", "Four", "Three", "Two", "Ace"
@@ -41,6 +53,13 @@ public class Deck {
 		top++;
 		return c;
 	}
+
+    public void addToDiscard(Card c) {
+        discard.add(c);
+        mFaceup = c;
+    }
+
+    public Card getFaceup { return mFaceup; }
 
     public boolean dealComplete() {
         return top >= 52;
