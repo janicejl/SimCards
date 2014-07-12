@@ -61,9 +61,10 @@ public class GameView extends View {
     private final static int NAME_COLOR = Color.WHITE;
     private final static int DRAG_ALPHA = 128;
     private final static int ICON_BUFFER = 50;
-    private final static int ICON_DISTANCE_FROM_MIDDLE = 100;
+    private final static int ICON_DISTANCE_FROM_MIDDLE = 150;
     private final static int TABLE_BORDER = Color.argb(255, 200, 200, 200);
     private final static float TABLE_STROKE_WIDTH = 20f;
+    private final static int ICON_WIDTH = 75;
 
     private Cardacopia mCurrentGame;
     private Rect mCenterRect;
@@ -248,7 +249,10 @@ public class GameView extends View {
         Card.card_height = mCardBitmap.getHeight() / 4;
         Card.card_width = mCardBitmap.getWidth() / 13;
 
-        mSpadeBitmap = BitmapFactory.decodeResource(getResources(), R.drawable.spades);
+        matrix.postRotate(90);
+        Bitmap spade = BitmapFactory.decodeResource(getResources(), R.drawable.spades);
+        mSpadeBitmap = Bitmap.createBitmap(spade, 0, 0, spade.getWidth(),
+                spade.getHeight(), matrix, true);
         mHeartBitmap = BitmapFactory.decodeResource(getResources(), R.drawable.hearts);
         mClubBitmap = BitmapFactory.decodeResource(getResources(), R.drawable.clubs);
         mDiamondBitmap = BitmapFactory.decodeResource(getResources(), R.drawable.diamonds);
@@ -275,6 +279,17 @@ public class GameView extends View {
         int topY = (mScreenHeight / 2) - ICON_BUFFER;
         int rightX = (mScreenWidth / 2) + ICON_DISTANCE_FROM_MIDDLE;
         int bottomY = (mScreenHeight / 2) + ICON_BUFFER;
+        canvas.drawBitmap(mHeartBitmap, null, new Rect(leftX - ICON_WIDTH, topY - ICON_WIDTH,
+                leftX, topY), null);
+        canvas.drawBitmap(mSpadeBitmap, null, new Rect(leftX - ICON_WIDTH, bottomY,
+                leftX, bottomY + ICON_WIDTH), null);
+        canvas.drawBitmap(mDiamondBitmap, null, new Rect(rightX, bottomY, rightX + ICON_WIDTH,
+                bottomY + ICON_WIDTH), null);
+        canvas.drawBitmap(mClubBitmap, null, new Rect(rightX, topY - ICON_WIDTH, rightX + ICON_WIDTH,
+                topY), null);
+        /*canvas.drawBitmap(mDiamondBitmap, leftX, bottomY, null);
+        canvas.drawBitmap(mSpadeBitmap, rightX, topY, null);
+        canvas.drawBitmap(mClubBitmap, rightX, bottomY, null);*/
     }
 
     private void drawScores(Canvas canvas) {

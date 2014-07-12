@@ -54,6 +54,16 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.example.simcards.UsernameForm" />
         </activity>
+        <activity
+            android:name=".HungerActivity"
+            android:label="@string/title_activity_hunger_activity"
+            android:screenOrientation="landscape"
+            android:parentActivityName=".MainActivity"
+            android:theme="@android:style/Theme.NoTitleBar.Fullscreen">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.example.simcards.HungerActivity" />
+        </activity>
     </application>
 
 </manifest>

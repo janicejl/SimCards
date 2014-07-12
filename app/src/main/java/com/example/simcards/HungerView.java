@@ -1,5 +1,6 @@
 package com.example.simcards;
 
+import android.app.Activity;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -27,6 +28,7 @@ import java.util.List;
 public class HungerView extends View {
     private final static int CHOOSE_PLAYER_CARD = 1;
     private final static int WAIT_FOR_NEXT_PLAYER = 2;
+    private final static int END_STATE = -1;
 
     private final static int BACKGROUND_COLOR = Color.parseColor("#002400");
     private final static int TABLE_BORDER = Color.argb(255, 200, 200, 200);
@@ -35,6 +37,14 @@ public class HungerView extends View {
     private final static int DECK_HEIGHT = 240;
     private final static int POPUP_HEIGHT = 150;
     private final static int POPUP_WIDTH = 250;
+    private final static int PLAYER_BUFFERS = 250;
+    private final static int SCREEN_BUFFER = 0;
+    private final static int DRAG_ALPHA = 128;
+    private final static float NAME_SIZE = 40.0F;
+    private final static int NAME_COLOR = Color.WHITE;
+    private final static int TEXT_BUFFER = 15;
+    private final static int POPUP_BUTTON_BUFFER = 10;
+    private final static long WIN_DELAY = 2000;
 
     private int mCurrentState;
     private Bitmap mCardBitmap;
@@ -81,8 +91,8 @@ public class HungerView extends View {
         MyTouchListener listener = new MyTouchListener();
         this.setOnTouchListener(listener);
 
-        mScreenWidth = CardacopiaInterface.SCREEN_WIDTH;
-        mScreenHeight = CardacopiaInterface.SCREEN_HEIGHT;
+        mScreenWidth = HungerActivity.SCREEN_WIDTH;
+        mScreenHeight = HungerActivity.SCREEN_HEIGHT;
         mCenterRect = new Rect((mScreenWidth / 2)- (DECK_WIDTH / 2),
                 (mScreenHeight / 2) - (DECK_HEIGHT / 2),
                 (mScreenWidth / 2) + (DECK_WIDTH / 2),
@@ -136,11 +146,112 @@ public class HungerView extends View {
 
     public void onDraw(Canvas canvas) {
         drawBackground(canvas);
-        /*drawDeck(canvas);
+        drawDeck(canvas);
         drawOpponentCards(canvas);
-        drawScores(canvas);
         drawNameAndIcons(canvas);
-        drawCards(canvas);*/
+        drawCards(canvas);
+    }
+
+    private void drawNameAndIcons(Canvas canvas) {
+        Paint p = new Paint();
+        p.setColor(NAME_COLOR);
+        p.setTextSize(NAME_SIZE);
+        canvas.drawText("Current player : " + mHungerUno.getActivePlayer().getName(),
+                mScreenWidth / 2, mScreenHeight - Card.card_height - TEXT_BUFFER, p);
+    }
+
+    private void drawCards(Canvas canvas) {
+        switch (mCurrentState) {
+            case CHOOSE_PLAYER_CARD:
+                // Draw the dragging card first
+                if (mDragCard != null) {
+                    Paint paint = new Paint();
+                    paint.setAlpha(DRAG_ALPHA);
+                    canvas.drawBitmap(mCardBitmap, mDragCard.getBox(),
+                            mDragCard.getPositionRect(), paint);
+                }
+
+
+                int yPos = mScreenHeight - Card.card_height - SCREEN_BUFFER;
+                List<Card> cardList = mHungerUno.getActivePlayer().getCards();
+                int cardSpacing = Math.min(Card.card_width,
+                        (mScreenWidth - (3 * SCREEN_BUFFER)) / (cardList.size() + 1));
+                for (int i = 0 ; i < cardList.size() ; i++) {
+                    if (mDragCard != null && cardList.get(i) == mDragCard) {
+                        continue;
+                    }
+                    Rect cardRect = cardList.get(i).getBox();
+                    Rect dstRect = new Rect(cardSpacing * i + SCREEN_BUFFER, yPos,
+                            cardSpacing * i + Card.card_width + SCREEN_BUFFER,
+                            yPos + Card.card_height);
+                    cardList.get(i).setPositionRect(dstRect);
+                    canvas.drawBitmap(mCardBitmap, cardRect, dstRect, null);
+                }
+                break;
+
+            case WAIT_FOR_NEXT_PLAYER:
+                int pos = mScreenHeight - Card.card_height - SCREEN_BUFFER;
+                List<Card> list = mHungerUno.getActivePlayer().getCards();
+                int spacing = Math.min(Card.card_width,
+                        (mScreenWidth - (3 * SCREEN_BUFFER)) / (list.size() + 1));
+                for (int i = 0 ; i < list.size() ; i++) {
+                    Rect dstRect = new Rect(spacing * i + SCREEN_BUFFER, pos,
+                            spacing * i + Card.card_width + SCREEN_BUFFER, pos + Card.card_height);
+                    list.get(i).setPositionRect(dstRect);
+                    canvas.drawBitmap(mCardBackBitmap, null, dstRect, null);
+                }
+                break;
+        }
+    }
+
+    private void drawOpponentCards(Canvas canvas) {
+        int mLeftPlayerCardCount = mCardCounts[0];
+        int mTopPlayerCardCount = mCardCounts[1];
+        int mRightPlayerCardCount = mCardCounts[2];
+        // Left Player's hand
+        if (mLeftPlayerCardCount != 0) {
+            int leftSpacing = Math.min(Card.card_width,
+                    (mScreenHeight - Card.card_width - (2 * PLAYER_BUFFERS)) /
+                            (mLeftPlayerCardCount));
+            int xPos = SCREEN_BUFFER;
+            for (int i = 0 ; i < mLeftPlayerCardCount ; i++) {
+                Rect dstRect = new Rect(xPos, i * leftSpacing + PLAYER_BUFFERS, xPos + Card.card_height,
+                        i * leftSpacing + PLAYER_BUFFERS + Card.card_width);
+                canvas.drawBitmap(mCardBackRotatedBitmap, null, dstRect, null);
+            }
+        }
+
+        // Top Player's hand
+        if (mTopPlayerCardCount != 0) {
+            int topSpacing = Math.min(Card.card_width,
+                    (mScreenWidth - (2 * PLAYER_BUFFERS)) / (mTopPlayerCardCount + 1));
+            for (int i = 0 ; i <mTopPlayerCardCount ; i++) {
+                Rect dstRect = new Rect(i * topSpacing + PLAYER_BUFFERS, SCREEN_BUFFER,
+                        i * topSpacing + PLAYER_BUFFERS + Card.card_width,
+                        SCREEN_BUFFER + Card.card_height);
+                canvas.drawBitmap(mCardBack180RotateBitmap, null, dstRect, null);
+            }
+        }
+
+        // Right Player's hand
+        if (mRightPlayerCardCount != 0) {
+            int rightSpacing = Math.min(Card.card_width,
+                    (mScreenHeight - Card.card_width - (2 * PLAYER_BUFFERS)) / mRightPlayerCardCount);
+            int xPos = mScreenWidth - SCREEN_BUFFER - Card.card_height;
+            for (int i = 0 ; i < mRightPlayerCardCount ; i++) {
+                Rect dstRect = new Rect(xPos, i * rightSpacing + PLAYER_BUFFERS,
+                        xPos + Card.card_height, i * rightSpacing + PLAYER_BUFFERS + Card.card_width);
+                canvas.drawBitmap(mCardBackCounterRotatedBitmap, null, dstRect, null);
+            }
+        }
+    }
+
+    private void drawDeck(Canvas canvas) {
+        if (mTopCard == null) {
+            canvas.drawBitmap(mCardBackBitmap, null, mCenterRect, null);
+        } else {
+            canvas.drawBitmap(mCardBitmap, mTopCard.getBox(), mCenterRect, null);
+        }
     }
 
     private void drawBackground(Canvas canvas) {
@@ -150,6 +261,36 @@ public class HungerView extends View {
         paint.setColor(TABLE_BORDER);
         paint.setStrokeWidth(TABLE_STROKE_WIDTH);
         canvas.drawRect(0, 0, mScreenWidth, mScreenHeight, paint);
+    }
+
+    private void showWin() {
+        mCurrentState = END_STATE;
+        Button popupButton = new Button(getContext());
+        popupButton.setText("Winner is " + mHungerUno.getWinner().getName() + "!!!");
+        popupButton.setHeight(POPUP_HEIGHT - POPUP_BUTTON_BUFFER);
+        popupButton.setWidth(POPUP_WIDTH - POPUP_BUTTON_BUFFER);
+        popupButton.setOnTouchListener(new OnTouchListener() {
+            long startTime = System.currentTimeMillis();
+
+            @Override
+            public boolean onTouch(View view, MotionEvent motionEvent) {
+                if (System.currentTimeMillis() - startTime >= WIN_DELAY) {
+                    ((Activity) getContext()).finish();
+                }
+                return true;
+            }
+        });
+        LinearLayout linearLayout = new LinearLayout(getContext());
+        linearLayout.addView(popupButton);
+
+//        RoundRectShape roundRectShape = new RoundRectShape(POPUP_OUTER_RECT, null, null);
+//        Drawable background = new ShapeDrawable(roundRectShape);
+//        linearLayout.setBackground(background);
+        PopupWindow window = new PopupWindow(linearLayout, POPUP_WIDTH, POPUP_HEIGHT);
+        window.setContentView(linearLayout);
+        window.showAsDropDown(this, mScreenWidth / 2 - (POPUP_WIDTH / 2),
+                -1 * mScreenHeight / 2 - (POPUP_HEIGHT / 2));
+        mCurrentState = END_STATE;
     }
 
     private class MyTouchListener implements OnTouchListener {
@@ -189,6 +330,9 @@ public class HungerView extends View {
                                     mDragCard.getPositionRect().intersect(mCenterRect) &&
                                     mHungerUno.makeMove(mDragCard)) {
                                 postInvalidate();
+                                if (mHungerUno.shouldWeEndTheGame()) {
+                                    showWin();
+                                }
                                 mCurrentState = WAIT_FOR_NEXT_PLAYER;
                                 mTopCard = mDragCard;
                                 mPopupWindow =

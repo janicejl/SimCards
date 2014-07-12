@@ -6,5 +6,6 @@
     <string name="hello_world">Hello world!</string>
     <string name="title_activity_cardacopia">Cardacopia</string>
     <string name="title_activity_username_form">UsernameForm</string>
+    <string name="title_activity_hunger_activity">HUNGERGAINS!</string>
 
 </resources>
