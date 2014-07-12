@@ -60,12 +60,18 @@ public class GameView extends View {
     private final static float NAME_SIZE = 40.0F;
     private final static int NAME_COLOR = Color.WHITE;
     private final static int DRAG_ALPHA = 128;
+    private final static int ICON_BUFFER = 50;
+    private final static int ICON_DISTANCE_FROM_MIDDLE = 100;
+    private final static int TABLE_BORDER = Color.argb(255, 200, 200, 200);
+    private final static float TABLE_STROKE_WIDTH = 20f;
 
     private Cardacopia mCurrentGame;
     private Rect mCenterRect;
     private Bitmap mCardBitmap;
     private Bitmap mCardBackBitmap;
     private Bitmap mCardBackRotatedBitmap;
+    private Bitmap mCardBackCounterRotatedBitmap;
+    private Bitmap mCardBack180RotateBitmap;
     private Player mCurrentPlayer;
     private int mScreenWidth;
     private int mScreenHeight;
@@ -80,6 +86,11 @@ public class GameView extends View {
     private PopupWindow mPopupWindow;
     private Card mTopCard;
     private Card mDragCard;
+    private Bitmap mClubBitmap;
+    private Bitmap mDiamondBitmap;
+    private Bitmap mHeartBitmap;
+    private Bitmap mSpadeBitmap;
+    private Bitmap mGreaterThanBitmap;
 
 	public GameView(Context context, String[] names) {
 		super(context);
@@ -226,8 +237,23 @@ public class GameView extends View {
         matrix.postRotate(90);
         mCardBackRotatedBitmap = Bitmap.createBitmap(mCardBackBitmap, 0, 0,
                 mCardBackBitmap.getWidth(), mCardBackBitmap.getHeight(), matrix, true);
+        matrix = new Matrix();
+        matrix.postRotate(-90);
+        mCardBackCounterRotatedBitmap = Bitmap.createBitmap(mCardBackBitmap, 0, 0,
+                mCardBackBitmap.getWidth(), mCardBackBitmap.getHeight(), matrix, true);
+        matrix = new Matrix();
+        matrix.postRotate(180);
+        mCardBack180RotateBitmap = Bitmap.createBitmap(mCardBackBitmap, 0, 0,
+                mCardBackBitmap.getWidth(), mCardBackBitmap.getHeight(), matrix, true);
         Card.card_height = mCardBitmap.getHeight() / 4;
         Card.card_width = mCardBitmap.getWidth() / 13;
+
+        mSpadeBitmap = BitmapFactory.decodeResource(getResources(), R.drawable.spades);
+        mHeartBitmap = BitmapFactory.decodeResource(getResources(), R.drawable.hearts);
+        mClubBitmap = BitmapFactory.decodeResource(getResources(), R.drawable.clubs);
+        mDiamondBitmap = BitmapFactory.decodeResource(getResources(), R.drawable.diamonds);
+        mGreaterThanBitmap =
+                BitmapFactory.decodeResource(getResources(), R.drawable.greater_than_sign);
     }
 
 	public void onDraw(Canvas canvas) {
@@ -245,6 +271,10 @@ public class GameView extends View {
         p.setTextSize(NAME_SIZE);
         canvas.drawText("Current player : " + mCurrentPlayer.getName(), mScreenWidth / 2 + SCORE_SIZE,
                 mScreenHeight - Card.card_height - TEXT_BUFFER, p);
+        int leftX = (mScreenWidth / 2) - ICON_DISTANCE_FROM_MIDDLE;
+        int topY = (mScreenHeight / 2) - ICON_BUFFER;
+        int rightX = (mScreenWidth / 2) + ICON_DISTANCE_FROM_MIDDLE;
+        int bottomY = (mScreenHeight / 2) + ICON_BUFFER;
     }
 
     private void drawScores(Canvas canvas) {
@@ -339,7 +369,7 @@ public class GameView extends View {
                 Rect dstRect = new Rect(i * topSpacing + PLAYER_BUFFERS, SCREEN_BUFFER,
                         i * topSpacing + PLAYER_BUFFERS + Card.card_width,
                         SCREEN_BUFFER + Card.card_height);
-                canvas.drawBitmap(mCardBackBitmap, null, dstRect, null);
+                canvas.drawBitmap(mCardBack180RotateBitmap, null, dstRect, null);
             }
         }
 
@@ -351,7 +381,7 @@ public class GameView extends View {
             for (int i = 0 ; i < mRightPlayerCardCount ; i++) {
                 Rect dstRect = new Rect(xPos, i * rightSpacing + PLAYER_BUFFERS,
                         xPos + Card.card_height, i * rightSpacing + PLAYER_BUFFERS + Card.card_width);
-                canvas.drawBitmap(mCardBackRotatedBitmap, null, dstRect, null);
+                canvas.drawBitmap(mCardBackCounterRotatedBitmap, null, dstRect, null);
             }
         }
     }
@@ -366,6 +396,11 @@ public class GameView extends View {
 
     private void drawBackground(Canvas canvas) {
         canvas.drawColor(BACKGROUND_COLOR);
+        Paint paint = new Paint();
+        paint.setStyle(Paint.Style.STROKE);
+        paint.setColor(TABLE_BORDER);
+        paint.setStrokeWidth(TABLE_STROKE_WIDTH);
+        canvas.drawRect(0, 0, mScreenWidth, mScreenHeight, paint);
     }
 
     private class MyTouchListener implements OnTouchListener {
@@ -374,20 +409,25 @@ public class GameView extends View {
         public boolean onTouch(View view, MotionEvent motionEvent) {
             Point p;
             p = new Point((int) motionEvent.getX(), (int) motionEvent.getY());
+            int x;
+            int y;
             switch (mCurrentState) {
                 case CHOOSE_PLAYER_CARD:
                     switch (motionEvent.getAction()) {
                         case MotionEvent.ACTION_DOWN:
-                            int index = findCardIndex(new Point((int) motionEvent.getX(),
-                                    (int) motionEvent.getY()));
+                            x = (int) motionEvent.getX();
+                            y = (int) motionEvent.getY();
+                            int index = findCardIndex(new Point(x, y));
                             if (index >= 0) {
                                 mDragCard = mCurrentPlayer.getCards().get(index);
+                                mDragCard.setPositionRect(new Rect(x, y, x + Card.card_width,
+                                        y + Card.card_height));
                             }
                             break;
 
                         case MotionEvent.ACTION_MOVE:
-                            int x = (int) motionEvent.getX() - (Card.card_width / 2);
-                            int y = (int) motionEvent.getY() - (Card.card_height / 2);
+                            x = (int) motionEvent.getX() - (Card.card_width / 2);
+                            y = (int) motionEvent.getY() - (Card.card_height / 2);
                             if (mDragCard != null) {
                                 mDragCard.setPositionRect(new Rect(x, y, x + Card.card_width,
                                         y + Card.card_height));
@@ -396,8 +436,9 @@ public class GameView extends View {
                             break;
 
                         case MotionEvent.ACTION_UP:
-                            if (mCurrentGame.makeMove(mDragCard) &&
-                                    mDragCard.getPositionRect().intersect(mCenterRect)) {
+                            if (mDragCard != null &&
+                                    mDragCard.getPositionRect().intersect(mCenterRect) &&
+                                    mCurrentGame.makeMove(mDragCard)) {
                                 postInvalidate();
                                 mCurrentState = WAIT_FOR_NEXT_PLAYER;
                                 mTopCard = mDragCard;
