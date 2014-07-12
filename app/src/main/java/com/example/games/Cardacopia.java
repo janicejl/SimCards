@@ -32,6 +32,21 @@ public class Cardacopia extends Game {
 
     }
 
+    //only called after game is over
+    public Player getWinner(){
+
+        Player mostAwesomePlayer = players.get(0);
+        int topScore = mostAwesomePlayer.getPoints();
+
+        for (Player p : players) {
+           if (p.getPoints() > topScore){
+               mostAwesomePlayer = p;
+               topScore = p.getPoints();
+           }
+        }
+
+        return mostAwesomePlayer;
+    }
     public Player getCurrentPlayer() {
         return activePlayer;
     }
@@ -68,7 +83,7 @@ public class Cardacopia extends Game {
         return false;
     }
 
-    public boolean hasValidMove() {
+    private boolean hasValidMove() {
         for (Card c : activePlayer.getCards()) {
             if (isValidMove(c)) {
                 return true;
@@ -78,7 +93,7 @@ public class Cardacopia extends Game {
         return false;
     }
 
-    public boolean isValidMove(Card c) {
+    private boolean isValidMove(Card c) {
         return compareCards(c, mTopCard) > 0;
     }
 
@@ -99,6 +114,16 @@ public class Cardacopia extends Game {
             activePlayer.addPoints(comparison);
             return true;
         }
+    }
+
+    public boolean shouldWeEndTheGame(){
+        int playersPlaying = 0;
+        for (Player p : players) {
+            if (p.getStatus()) {
+                playersPlaying++;
+            }
+        }
+        return playersPlaying > 1;
     }
 
     public void setNextPlayer() {
