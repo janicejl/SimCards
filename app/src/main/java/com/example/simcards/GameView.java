@@ -60,6 +60,10 @@ public class GameView extends View {
     private final static float NAME_SIZE = 40.0F;
     private final static int NAME_COLOR = Color.WHITE;
     private final static int DRAG_ALPHA = 128;
+    private final static int ICON_BUFFER = 50;
+    private final static int ICON_DISTANCE_FROM_MIDDLE = 100;
+    private final static int TABLE_BORDER = Color.argb(255, 200, 200, 200);
+    private final static float TABLE_STROKE_WIDTH = 20f;
 
     private Cardacopia mCurrentGame;
     private Rect mCenterRect;
@@ -82,6 +86,11 @@ public class GameView extends View {
     private PopupWindow mPopupWindow;
     private Card mTopCard;
     private Card mDragCard;
+    private Bitmap mClubBitmap;
+    private Bitmap mDiamondBitmap;
+    private Bitmap mHeartBitmap;
+    private Bitmap mSpadeBitmap;
+    private Bitmap mGreaterThanBitmap;
 
 	public GameView(Context context, String[] names) {
 		super(context);
@@ -238,6 +247,13 @@ public class GameView extends View {
                 mCardBackBitmap.getWidth(), mCardBackBitmap.getHeight(), matrix, true);
         Card.card_height = mCardBitmap.getHeight() / 4;
         Card.card_width = mCardBitmap.getWidth() / 13;
+
+        mSpadeBitmap = BitmapFactory.decodeResource(getResources(), R.drawable.spades);
+        mHeartBitmap = BitmapFactory.decodeResource(getResources(), R.drawable.hearts);
+        mClubBitmap = BitmapFactory.decodeResource(getResources(), R.drawable.clubs);
+        mDiamondBitmap = BitmapFactory.decodeResource(getResources(), R.drawable.diamonds);
+        mGreaterThanBitmap =
+                BitmapFactory.decodeResource(getResources(), R.drawable.greater_than_sign);
     }
 
 	public void onDraw(Canvas canvas) {
@@ -255,6 +271,10 @@ public class GameView extends View {
         p.setTextSize(NAME_SIZE);
         canvas.drawText("Current player : " + mCurrentPlayer.getName(), mScreenWidth / 2 + SCORE_SIZE,
                 mScreenHeight - Card.card_height - TEXT_BUFFER, p);
+        int leftX = (mScreenWidth / 2) - ICON_DISTANCE_FROM_MIDDLE;
+        int topY = (mScreenHeight / 2) - ICON_BUFFER;
+        int rightX = (mScreenWidth / 2) + ICON_DISTANCE_FROM_MIDDLE;
+        int bottomY = (mScreenHeight / 2) + ICON_BUFFER;
     }
 
     private void drawScores(Canvas canvas) {
@@ -376,6 +396,11 @@ public class GameView extends View {
 
     private void drawBackground(Canvas canvas) {
         canvas.drawColor(BACKGROUND_COLOR);
+        Paint paint = new Paint();
+        paint.setStyle(Paint.Style.STROKE);
+        paint.setColor(TABLE_BORDER);
+        paint.setStrokeWidth(TABLE_STROKE_WIDTH);
+        canvas.drawRect(0, 0, mScreenWidth, mScreenHeight, paint);
     }
 
     private class MyTouchListener implements OnTouchListener {

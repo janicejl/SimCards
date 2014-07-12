@@ -1,6 +1,6 @@
 {
   "name": "SimCardsGameServer",
-  "version": "0.0.1-3",
+  "version": "0.0.1-4",
   "description": "sim card game server",
   "dependencies": {
     "socket.io": "~1.0.6",

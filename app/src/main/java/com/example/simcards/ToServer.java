@@ -1,4 +1,4 @@
-/*package com.example.simcards;
+package com.example.simcards;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -7,9 +7,9 @@ import io.socket.IOAcknowledge;
 import io.socket.IOCallback;
 import io.socket.SocketIOException;
 
-/**
+/*
  * Created by J on 7/12/14.
- *//*
+ */
 public class ToServer implements IOCallback {
     private SocketIO socket;
     Player player;
@@ -46,7 +46,7 @@ public class ToServer implements IOCallback {
             int player_id = ((JSONObject)objects[0]).getInt("player_id");
 
             if (s.equals("connected")) {
-                player.setId(player_id);
+                player.setID(player_id);
             } else if (s.equals("gameFull")) {
                 if (player.getId() == 0) {
                     player.sendDealtCards();
@@ -62,9 +62,9 @@ public class ToServer implements IOCallback {
                     }
                 }
             } else if (s.equals("movesPlayed")) {
-                JSONObject card = ((JSONObject)objects[0].getObject("card"));
-                String rank = card.RANK;
-                String suit = card.SUITS;
+                JSONObject card = ((JSONObject)objects[0]).getJSONObject("card");
+                String rank = card.getString("RANK");
+                String suit = card.getString("SUITS");
 
                 String ranks[] = {
                         "King", "Queen", "Jack", "Ten", "Nine", "Eight",
@@ -81,7 +81,10 @@ public class ToServer implements IOCallback {
                     }
                 }
                 Card newCard = new Card(rank, suit, tempValue, 0, 0, 0);
-            } else if (s.equals(""))
+                // needs to let the game know that the card was played somehow
+            } else if (s.equals("playerDied")) {
+                player.setStatus(false);
+            }
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -94,4 +97,5 @@ public class ToServer implements IOCallback {
         socketIOException.printStackTrace();
     }
 }
-*/
+
+}

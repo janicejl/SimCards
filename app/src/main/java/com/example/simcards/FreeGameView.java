@@ -347,7 +347,7 @@ public class FreeGameView extends View {
                                 y + Card.card_height));
                         break;
                     }
-                    index = 
+                    index =
                     break;
 
                 case MotionEvent.ACTION_MOVE:
