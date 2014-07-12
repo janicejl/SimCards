@@ -27,6 +27,7 @@
         <activity
             android:name=".CardacopiaInterface"
             android:label="CardacopiaInterface"
+            android:screenOrientation="landscape"
             android:parentActivityName=".MainActivity"
             android:theme="@android:style/Theme.NoTitleBar.Fullscreen" >
             <meta-data
@@ -36,6 +37,7 @@
         <activity
             android:name=".Cardacopia"
             android:label="@string/title_activity_cardacopia"
+            android:screenOrientation="landscape"
             android:parentActivityName=".MainActivity"
             android:theme="@android:style/Theme.NoTitleBar.Fullscreen" >
             <meta-data
@@ -45,6 +47,7 @@
         <activity
             android:name=".UsernameForm"
             android:label="@string/title_activity_username_form"
+            android:screenOrientation="landscape"
             android:parentActivityName=".MainActivity"
             android:theme="@android:style/Theme.NoTitleBar.Fullscreen">
             <meta-data
