@@ -20,6 +20,9 @@ import android.widget.LinearLayout;
 import android.widget.PopupWindow;
 import android.widget.Toast;
 
+import com.example.games.Cardacopia;
+
+import java.util.ArrayList;
 import java.util.List;
 
 public class GameView extends View {
@@ -41,7 +44,9 @@ public class GameView extends View {
     private final static int POPUP_BUTTON_BUFFER = 10;
     private final static int POPUP_BACKGROUND_COLOR = Color.argb(255, 128, 128, 128);
     private final static int TEXT_BUFFER = 15;
+    private final static float[] POPUP_OUTER_RECT = new float[] {5, 5, 5, 5, 5, 5, 5, 5};
 
+    private Cardacopia mCurrentGame;
     private Rect mCenterRect;
     private Bitmap mCardBitmap;
     private Bitmap mCardBackBitmap;
@@ -77,11 +82,10 @@ public class GameView extends View {
 
         mPopupWindow = createPopupWindow();
 
-        //TODO Take out the hardcoded stuff
-        mCurrentPlayer = new Player();
-        for (int i = 0 ; i < 20 ; i++) {
-            mCurrentPlayer.addCard(new Card("10", "spade", (i + 1) % 13, i % 4));
-        }
+        List<Player> players = new ArrayList<Player>();
+        mCurrentGame = new Cardacopia(players, new Deck(), Game.DEAL_ALL_CARDS);
+
+        mCurrentPlayer = mCurrentGame.getActivePlayer();
 
         mLeftPlayerCardCount = 10;
         mTopPlayerCardCount = 10;
@@ -109,9 +113,9 @@ public class GameView extends View {
         });
         LinearLayout linearLayout = new LinearLayout(getContext());
         linearLayout.addView(popupButton);
-        //RoundRectShape roundRectShape = new RoundRectShape()
-//        Drawable background = new ShapeDrawable(new RectShape());
-//        linearLayout.setBackground();
+//        RoundRectShape roundRectShape = new RoundRectShape(POPUP_OUTER_RECT, null, null);
+//        Drawable background = new ShapeDrawable(roundRectShape);
+//        linearLayout.setBackground(background);
         PopupWindow window = new PopupWindow(linearLayout, POPUP_WIDTH, POPUP_HEIGHT);
         window.setContentView(linearLayout);
         return window;
@@ -249,8 +253,12 @@ public class GameView extends View {
             switch (mCurrentState) {
                 case CHOOSE_PLAYER_CARD:
                     int index = findCardIndex(p);
-                    if (index > -1) {
-                        mCurrentPlayer.getCards().remove(index);
+                    if (index <= -1) {
+                        break;
+                    }
+                    Card c = mCurrentPlayer.getCards().get(index);
+                    if (mCurrentGame.isValidMove(c)) {
+                        mCurrentGame.makeMove(c);
                         mCurrentState = WAIT_FOR_NEXT_PLAYER;
                         mPopupWindow = createPopupWindow();
                         mPopupWindow.showAsDropDown(view, mScreenWidth / 2 - (POPUP_WIDTH / 2),

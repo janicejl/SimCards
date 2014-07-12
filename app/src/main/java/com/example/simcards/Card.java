@@ -42,7 +42,7 @@ public class Card {
      * This gets the rectangle for the actual image in the bitmap
      */
 	Rect getBox() {
-		return new Rect(0, 0, 98, 73);
+		return new Rect(x_pos, y_pos, x_pos + card_width, y_pos + card_height);
 	}
 	
 	void setValue(int aValue) {
@@ -50,13 +50,7 @@ public class Card {
 	}
 	
 	Card(String rk, String st, int val, int suitVal) {
-		rank = rk;
-		suit = st;
-		value = val;
-		suits_picture_position = suitVal;
-
-		x_pos = 0;
-		y_pos = 0;
+		this(rk, st, val, suitVal, 0, 0);
 	}
 
     /**
