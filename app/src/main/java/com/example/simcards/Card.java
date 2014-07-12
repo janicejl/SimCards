@@ -87,4 +87,10 @@ public class Card {
     public boolean containsPoint(Point p) {
         return mCurrentPositionRect.contains(p.x, p.y);
     }
+
+    public String toJSON() {
+        return "{\"card\":\""
+                + "\"SUITS\":\"" + suit + "\","
+                + "\"RANK\":\"" + rank + "\"}";
+    }
 }
