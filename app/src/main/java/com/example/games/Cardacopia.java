@@ -16,6 +16,7 @@ public class Cardacopia extends Game {
     Spades > Hearts > Clubs > Diamonds > Spades
      */
     ArrayList<Card> middlePile = new ArrayList<Card>();
+    ArrayList<Card>
 
     private Card mTopCard;
 
@@ -30,6 +31,37 @@ public class Cardacopia extends Game {
             activePlayer.kickOut();
         }
 
+    }
+
+    public Player getCurrentPlayer() {
+        return activePlayer;
+    }
+
+    public Card getTopCard() {
+        return mTopCard;
+    }
+
+    public int[] getScoreArray() {
+        int[] scoreArr = new int[3];
+        Player nextPlayer = nextPlayer();
+        int count = 0;
+        while (nextPlayer != activePlayer){
+            scoreArr[count] = nextPlayer.getPoints();
+            nextPlayer = nextPlayer();
+        }
+
+        return scoreArr;
+    }
+    public int[] getCardNumberArray() {
+        int[] countArr = new int[3];
+        Player nextPlayer = nextPlayer();
+        int count = 0;
+        while (nextPlayer != activePlayer){
+           countArr[count] = nextPlayer.getCards().size();
+           nextPlayer = nextPlayer();
+        }
+
+        return countArr;
     }
 
     @Override
@@ -52,6 +84,12 @@ public class Cardacopia extends Game {
     }
 
     public boolean makeMove(Card c) {
+        if (mTopCard == null) {
+            mTopCard = c;
+            activePlayer.play(c);
+            return true;
+        }
+
         int comparison = compareCards(c, mTopCard);
         if (comparison == 0) {
             return false;
