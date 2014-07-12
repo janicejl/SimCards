@@ -32,8 +32,20 @@ public class Cardacopia extends Game {
 
     }
 
-    public Player getCurrentPlayer() {
-        return activePlayer;
+    @Override
+    //only called after game is over
+    public Player getWinner(){
+        Player mostAwesomePlayer = players.get(0);
+        int topScore = mostAwesomePlayer.getPoints();
+
+        for (Player p : players) {
+           if (p.getPoints() > topScore){
+               mostAwesomePlayer = p;
+               topScore = p.getPoints();
+           }
+        }
+
+        return mostAwesomePlayer;
     }
 
     public Card getTopCard() {
@@ -52,6 +64,7 @@ public class Cardacopia extends Game {
 
         return scoreArr;
     }
+
     public int[] getCardNumberArray() {
         int[] countArr = new int[3];
         Player nextPlayer = nextPlayer();
@@ -65,12 +78,7 @@ public class Cardacopia extends Game {
         return countArr;
     }
 
-    @Override
-    public boolean hasWon() {
-        return false;
-    }
-
-    public boolean hasValidMove() {
+    private boolean hasValidMove() {
         for (Card c : activePlayer.getCards()) {
             if (!activePlayer.getStatus()) {
                 return false;
@@ -83,10 +91,11 @@ public class Cardacopia extends Game {
         return false;
     }
 
-    public boolean isValidMove(Card c) {
+    private boolean isValidMove(Card c) {
         return compareCards(c, mTopCard) > 0;
     }
 
+    @Override
     public boolean makeMove(Card c) {
         if (mTopCard == null) {
             mTopCard = c;
@@ -106,18 +115,24 @@ public class Cardacopia extends Game {
         }
     }
 
+    @Override
+    public boolean shouldWeEndTheGame(){
+        int playersPlaying = 0;
+        for (Player p : players) {
+            if (p.getStatus()) {
+                playersPlaying++;
+            }
+        }
+        return playersPlaying > 1;
+    }
+
+    @Override
     public void setNextPlayer() {
         activePlayer = nextPlayer();
     }
 
     @Override
-    //return if player has a valid move
-    public boolean shouldPlayerContinue() {
-        return false;
-    }
-
     public int compareCards(Card a, Card b) {
-
         if(a.getValue() > b.getValue()) {
             return a.getValue() - b.getValue();
         }

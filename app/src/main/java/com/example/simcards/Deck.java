@@ -15,6 +15,7 @@ public class Deck {
 			deck.set(i, deck.get(ran));
 			deck.set(ran, temp);
 		}
+        top = 0;
 	}
 	
 	Deck() {
