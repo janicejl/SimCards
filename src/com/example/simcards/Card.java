@@ -1,5 +1,7 @@
 package com.example.simcards;
 
+import android.graphics.Rect;
+
 public class Card {
 	final int card_width = 73;
 	final int card_height = 98;
@@ -30,6 +32,10 @@ public class Card {
 	
 	int getY() {
 		return y_pos;
+	}
+	
+	Rect getBox() {
+		return new Rect(0, 0, 98, 73);
 	}
 	
 	void setValue(int aValue) {
