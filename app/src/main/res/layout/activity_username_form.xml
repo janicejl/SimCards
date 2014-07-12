@@ -89,6 +89,6 @@
         android:layout_alignTop="@+id/textView"
         android:layout_alignEnd="@+id/player2"
         android:onClick="startCardacopia"
-        android:padding="10dp" />
+        android:padding="10dp"/>
 
 </RelativeLayout>

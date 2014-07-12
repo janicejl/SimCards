@@ -7,5 +7,7 @@
     <string name="title_activity_cardacopia">Cardacopia</string>
     <string name="title_activity_username_form">UsernameForm</string>
     <string name="title_activity_hunger_activity">HUNGERGAINS!</string>
+    <string name="title_activity_cardacopia_instr">CardacopiaInstr</string>
+    <string name="title_activity_hunger_activity_instr">HungerActivityInstr</string>
 
 </resources>

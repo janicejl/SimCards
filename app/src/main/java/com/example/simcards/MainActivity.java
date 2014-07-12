@@ -29,15 +29,16 @@ public class MainActivity extends Activity {
         SCREEN_WIDTH = size.x;
 	}
 
-    public void GoToUsernameForm(View view) {
-        Intent intent = new Intent(this, UsernameForm.class);
+    public void GoToCInstr(View view) {
+        Intent intent = new Intent(this, CardacopiaInstr.class);
         startActivity(intent);
     }
 
-    public void GoToHungerGains(View view) {
-        Intent intent = new Intent(this, HungerActivity.class);
+    public void GoToHungerActivityInstr(View view) {
+        Intent intent = new Intent(this, HungerActivityInstr.class);
         startActivity(intent);
     }
+
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
