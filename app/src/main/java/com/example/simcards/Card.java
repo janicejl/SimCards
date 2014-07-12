@@ -4,8 +4,8 @@ import android.graphics.Point;
 import android.graphics.Rect;
 
 public class Card {
-	public static final int card_width = 74;
-	public static final int card_height = 118;
+	public static final int card_width = 73;
+	public static final int card_height = 98;
     public static final Rect CARD_RECT = new Rect(0, 0, card_width, card_height);
 
 	String rank;
@@ -16,8 +16,7 @@ public class Card {
 	int x_pos;
 	int y_pos;
 
-    private int mGlobalPositionX;
-    private int mGlobalPositionY;
+    private Rect mCurrentPositionRect;
 
 	
 	String getRank() {
@@ -39,9 +38,12 @@ public class Card {
 	int getY() {
 		return y_pos;
 	}
-	
+
+    /**
+     * This gets the rectangle for the actual image in the bitmap
+     */
 	Rect getBox() {
-		return new Rect(0, 0, card_width, card_height);
+		return new Rect(x_pos, x_pos, x_pos + card_width, y_pos + card_height);
 	}
 	
 	void setValue(int aValue) {
@@ -65,36 +67,26 @@ public class Card {
         x_pos = card_width * (value - 1);
         y_pos = card_height * suits_picture_position;
 
-        mGlobalPositionX = positionX;
-        mGlobalPositionY = positionY;
+        mCurrentPositionRect = new Rect(positionX, positionY,
+                positionX + card_width, positionY + card_height);
     }
 	
 	void print() {
 		System.out.println(rank + " of " + suit);
 	}
 
-    public int getGlobalPositionX() {
-        return mGlobalPositionX;
+    public Rect getPositionRect() {
+        return  mCurrentPositionRect;
     }
 
-    public int getGlobalPositionY() {
-        return mGlobalPositionY;
-    }
-
-    public void setGlobalPositionX(int x) {
-        mGlobalPositionX = x;
-    }
-
-    public void setGlobalPositionY(int y) {
-        mGlobalPositionY = y;
+    public void setPositionRect(Rect r) {
+        mCurrentPositionRect = r;
     }
 
     /**
      * Used for touch detection, will return true if the touch occurred on this card
      */
     public boolean containsPoint(Point p) {
-        Rect temp = new Rect(mGlobalPositionX, mGlobalPositionY, mGlobalPositionX + card_width,
-                mGlobalPositionY+ card_height);
-        return temp.contains(p.x, p.y);
+        return mCurrentPositionRect.contains(p.x, p.y);
     }
 }
