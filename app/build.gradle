@@ -2,22 +2,23 @@ apply plugin: 'android'
 
 android {
     compileSdkVersion 17
-    buildToolsVersion "20.0.0"
-
+    buildToolsVersion '20.0.0'
     defaultConfig {
-        applicationId "com.example.simcards"
+        applicationId 'com.example.simcards'
         minSdkVersion 17
         targetSdkVersion 17
     }
-
     buildTypes {
         release {
             runProguard false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.txt'
         }
     }
+    productFlavors {
+    }
 }
 
 dependencies {
     compile 'com.android.support:support-v4:20.+'
+    compile files('/Users/J/Github/SimCards/libs/socketio.jar')
 }

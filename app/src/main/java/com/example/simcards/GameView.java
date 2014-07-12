@@ -15,6 +15,7 @@ import android.graphics.drawable.ShapeDrawable;
 import android.graphics.drawable.shapes.RectShape;
 import android.graphics.drawable.shapes.RoundRectShape;
 import android.util.Log;
+import android.view.DragEvent;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
@@ -40,7 +41,7 @@ public class GameView extends View {
     private final static int SCORE_COLOR_OUTLINE = Color.BLACK;
     private final static float SCORE_SIZE = 80.0f;
     private final static float SCORE_SIZE_OUTLINE = 30.5f;
-    private final static int PLAYER_BUFFERS = 200;
+    private final static int PLAYER_BUFFERS = 250;
     private final static int SCREEN_BUFFER = 0;
     private final static int DECK_WIDTH = 180;
     private final static int DECK_HEIGHT = 240;
@@ -56,12 +57,17 @@ public class GameView extends View {
             Color.BLACK};
     private final static String LOSER_POPUP_MSG = "You lost, I am sorry :(";
     private final static long WIN_DELAY = 2000;
+    private final static float NAME_SIZE = 40.0F;
+    private final static int NAME_COLOR = Color.WHITE;
+    private final static int DRAG_ALPHA = 128;
 
     private Cardacopia mCurrentGame;
     private Rect mCenterRect;
     private Bitmap mCardBitmap;
     private Bitmap mCardBackBitmap;
     private Bitmap mCardBackRotatedBitmap;
+    private Bitmap mCardBackCounterRotatedBitmap;
+    private Bitmap mCardBack180RotateBitmap;
     private Player mCurrentPlayer;
     private int mScreenWidth;
     private int mScreenHeight;
@@ -75,6 +81,7 @@ public class GameView extends View {
     private int mCurrentState;
     private PopupWindow mPopupWindow;
     private Card mTopCard;
+    private Card mDragCard;
 
 	public GameView(Context context, String[] names) {
 		super(context);
@@ -91,13 +98,17 @@ public class GameView extends View {
                 | View.SYSTEM_UI_FLAG_FULLSCREEN;
         setSystemUiVisibility(uiOptions);
 
-        this.setOnTouchListener(new MyTouchListener());
+        MyTouchListener listener = new MyTouchListener();
+        this.setOnTouchListener(listener);
+
         mScreenWidth = CardacopiaInterface.SCREEN_WIDTH;
         mScreenHeight = CardacopiaInterface.SCREEN_HEIGHT;
         mCenterRect = new Rect((mScreenWidth / 2)- (DECK_WIDTH / 2),
                 (mScreenHeight / 2) - (DECK_HEIGHT / 2),
                 (mScreenWidth / 2) + (DECK_WIDTH / 2),
                 (mScreenHeight / 2) + (DECK_HEIGHT / 2));
+
+        mDragCard = null;
     }
 
     private void setGameVariables(String[] names) {
@@ -217,17 +228,34 @@ public class GameView extends View {
         matrix.postRotate(90);
         mCardBackRotatedBitmap = Bitmap.createBitmap(mCardBackBitmap, 0, 0,
                 mCardBackBitmap.getWidth(), mCardBackBitmap.getHeight(), matrix, true);
+        matrix = new Matrix();
+        matrix.postRotate(-90);
+        mCardBackCounterRotatedBitmap = Bitmap.createBitmap(mCardBackBitmap, 0, 0,
+                mCardBackBitmap.getWidth(), mCardBackBitmap.getHeight(), matrix, true);
+        matrix = new Matrix();
+        matrix.postRotate(180);
+        mCardBack180RotateBitmap = Bitmap.createBitmap(mCardBackBitmap, 0, 0,
+                mCardBackBitmap.getWidth(), mCardBackBitmap.getHeight(), matrix, true);
         Card.card_height = mCardBitmap.getHeight() / 4;
         Card.card_width = mCardBitmap.getWidth() / 13;
     }
 
 	public void onDraw(Canvas canvas) {
 		drawBackground(canvas);
-        drawCards(canvas);
         drawDeck(canvas);
         drawOpponentCards(canvas);
         drawScores(canvas);
+        drawNameAndIcons(canvas);
+        drawCards(canvas);
 	}
+
+    private void drawNameAndIcons(Canvas canvas) {
+        Paint p = new Paint();
+        p.setColor(NAME_COLOR);
+        p.setTextSize(NAME_SIZE);
+        canvas.drawText("Current player : " + mCurrentPlayer.getName(), mScreenWidth / 2 + SCORE_SIZE,
+                mScreenHeight - Card.card_height - TEXT_BUFFER, p);
+    }
 
     private void drawScores(Canvas canvas) {
         Paint p = new Paint();
@@ -257,11 +285,23 @@ public class GameView extends View {
     private void drawCards(Canvas canvas) {
         switch (mCurrentState) {
             case CHOOSE_PLAYER_CARD:
+                // Draw the dragging card first
+                if (mDragCard != null) {
+                    Paint paint = new Paint();
+                    paint.setAlpha(DRAG_ALPHA);
+                    canvas.drawBitmap(mCardBitmap, mDragCard.getBox(),
+                            mDragCard.getPositionRect(), paint);
+                }
+
+
                 int yPos = mScreenHeight - Card.card_height - SCREEN_BUFFER;
                 List<Card> cardList = mCurrentPlayer.getCards();
                 int cardSpacing = Math.min(Card.card_width,
                         (mScreenWidth - (3 * SCREEN_BUFFER)) / (cardList.size() + 1));
                 for (int i = 0 ; i < cardList.size() ; i++) {
+                    if (mDragCard != null && cardList.get(i) == mDragCard) {
+                        continue;
+                    }
                     Rect cardRect = cardList.get(i).getBox();
                     Rect dstRect = new Rect(cardSpacing * i + SCREEN_BUFFER, yPos,
                             cardSpacing * i + Card.card_width + SCREEN_BUFFER,
@@ -309,7 +349,7 @@ public class GameView extends View {
                 Rect dstRect = new Rect(i * topSpacing + PLAYER_BUFFERS, SCREEN_BUFFER,
                         i * topSpacing + PLAYER_BUFFERS + Card.card_width,
                         SCREEN_BUFFER + Card.card_height);
-                canvas.drawBitmap(mCardBackBitmap, null, dstRect, null);
+                canvas.drawBitmap(mCardBack180RotateBitmap, null, dstRect, null);
             }
         }
 
@@ -321,7 +361,7 @@ public class GameView extends View {
             for (int i = 0 ; i < mRightPlayerCardCount ; i++) {
                 Rect dstRect = new Rect(xPos, i * rightSpacing + PLAYER_BUFFERS,
                         xPos + Card.card_height, i * rightSpacing + PLAYER_BUFFERS + Card.card_width);
-                canvas.drawBitmap(mCardBackRotatedBitmap, null, dstRect, null);
+                canvas.drawBitmap(mCardBackCounterRotatedBitmap, null, dstRect, null);
             }
         }
     }
@@ -344,21 +384,47 @@ public class GameView extends View {
         public boolean onTouch(View view, MotionEvent motionEvent) {
             Point p;
             p = new Point((int) motionEvent.getX(), (int) motionEvent.getY());
+            int x;
+            int y;
             switch (mCurrentState) {
                 case CHOOSE_PLAYER_CARD:
-                    int index = findCardIndex(p);
-                    if (index <= -1) {
-                        break;
-                    }
-                    Card c = mCurrentPlayer.getCards().get(index);
-                    if (mCurrentGame.makeMove(c)) {
-                        postInvalidate();
-                        mCurrentState = WAIT_FOR_NEXT_PLAYER;
-                        mTopCard = c;
-                        mPopupWindow =
-                                createPopupWindow(mCurrentGame.getNextPlayerName() + " is up", true);
-                        mPopupWindow.showAsDropDown(view, mScreenWidth / 2 - (POPUP_WIDTH / 2),
-                                -1 * mScreenHeight / 2 - (POPUP_HEIGHT / 2));
+                    switch (motionEvent.getAction()) {
+                        case MotionEvent.ACTION_DOWN:
+                            x = (int) motionEvent.getX();
+                            y = (int) motionEvent.getY();
+                            int index = findCardIndex(new Point(x, y));
+                            if (index >= 0) {
+                                mDragCard = mCurrentPlayer.getCards().get(index);
+                                mDragCard.setPositionRect(new Rect(x, y, x + Card.card_width,
+                                        y + Card.card_height));
+                            }
+                            break;
+
+                        case MotionEvent.ACTION_MOVE:
+                            x = (int) motionEvent.getX() - (Card.card_width / 2);
+                            y = (int) motionEvent.getY() - (Card.card_height / 2);
+                            if (mDragCard != null) {
+                                mDragCard.setPositionRect(new Rect(x, y, x + Card.card_width,
+                                        y + Card.card_height));
+                            }
+                            invalidate();
+                            break;
+
+                        case MotionEvent.ACTION_UP:
+                            if (mDragCard != null &&
+                                    mDragCard.getPositionRect().intersect(mCenterRect) &&
+                                    mCurrentGame.makeMove(mDragCard)) {
+                                postInvalidate();
+                                mCurrentState = WAIT_FOR_NEXT_PLAYER;
+                                mTopCard = mDragCard;
+                                mPopupWindow =
+                                        createPopupWindow(mCurrentGame.getNextPlayerName() + " is up", true);
+                                mPopupWindow.showAsDropDown(view, mScreenWidth / 2 - (POPUP_WIDTH / 2),
+                                        -1 * mScreenHeight / 2 - (POPUP_HEIGHT / 2));
+                            }
+                            mDragCard = null;
+                            invalidate();
+                            break;
                     }
                     break;
 
