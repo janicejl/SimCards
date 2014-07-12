@@ -18,6 +18,7 @@ public class Card {
 
     private int mGlobalPositionX;
     private int mGlobalPositionY;
+
 	
 	String getRank() {
 		return rank;
