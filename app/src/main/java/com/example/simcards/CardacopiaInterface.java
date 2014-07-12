@@ -12,6 +12,7 @@ import android.view.Menu;
 
 import android.view.Display;
 import android.view.Window;
+import android.content.Intent;
 
 public class CardacopiaInterface extends Activity {
     public static int SCREEN_WIDTH;
@@ -20,6 +21,14 @@ public class CardacopiaInterface extends Activity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+
+        Intent intent = getIntent();
+        String player1 = intent.getStringExtra("com.example.simcards.player1");
+        String player2 = intent.getStringExtra("com.example.simcards.player2");
+        String player3 = intent.getStringExtra("com.example.simcards.player3");
+        String player4 = intent.getStringExtra("com.example.simcards.player4");
+        String[] players = {player1, player2, player3, player4};
+
         getWindow().requestFeature(Window.FEATURE_ACTION_BAR);
         Display display = getWindowManager().getDefaultDisplay();
         Point size = new Point();
@@ -27,7 +36,7 @@ public class CardacopiaInterface extends Activity {
         SCREEN_HEIGHT = size.y;
         SCREEN_WIDTH = size.x;
 		
-		GameView gameview = new GameView(this, null);
+		GameView gameview = new GameView(this, players);
 		gameview.setBackgroundColor(Color.parseColor("#002400"));
 		setContentView(gameview);
 	}

@@ -2,22 +2,10 @@
 <html>
 <body>
 
-<p>Click the player's button to see their status.</p>
-
-<button id='requestConnection'>Request connection.</button>
 <button id='gameOver'>Game Over.</button>
 <script src="/socket.io/socket.io.js"></script>
 
 <script>
-
-var onRequestingConnection = function() {
-    console.log('emitted requestingConnection');
-	io.connect().emit('requestingConnection');
-};
-
-var requestConnection = document.getElementById('requestConnection');
-requestConnection.addEventListener('click', onRequestingConnection);
-
 var onGameOver = function() {
 	console.log('gameOver');
 	io.connect().emit('gameOver');
@@ -52,7 +40,7 @@ Player.prototype.setPlayerId = function(player_id) {
  */
 Player.prototype.sendDealedCards = function() {
 	var cards = {'message': 'dealedCards'};
-	console.log('dealedCards');
+	console.log('dealedCards by ' + player.id);
 	io.connect().emit('dealedCards', cards);
 };
 
@@ -63,7 +51,7 @@ Player.prototype.sendDealedCards = function() {
  */
 Player.prototype.sendPlayerMove = function() {
 	var move = {'message': 'playerMove'};
-	console.log('playerMove');
+	console.log('playerMove by ' + player.id);
 	io.connect().emit('playerMove', move);
 };
 
@@ -75,7 +63,7 @@ Player.prototype.sendPlayerMove = function() {
  */
 Player.prototype.sendNoMove = function() {
 	var move = {'message': 'noMove'};
-	console.log('noMove');
+	console.log('noMove by ' + player.id);
 	io.connect().emit('noMove', move);
 };
 
@@ -100,7 +88,7 @@ io.connect().on('gameFull', function() {
 		player.sendDealedCards();
 	}
 	else {
-		console.log(player.id + 'recognizes game is full');
+		console.log(player.id + ' recognizes game is full');
 	}
 });
 
@@ -110,7 +98,7 @@ io.connect().on('gameFull', function() {
  */
 io.connect().on('gameStart', function(data) {
 	player.alive = true;
-	console.log('gameStart'); 
+	console.log('gameStart recognized by ' + data.player_id); 
 });
 
 /**
@@ -119,13 +107,16 @@ io.connect().on('gameStart', function(data) {
  * we have left for now so we can run through all cases.
  */
 io.connect().on('playerTurn', function(data) {
-	console.log('playerTurn');
-	if (data.playerId == player.id && player.alive && player.movesLeft > 0) {
-		player.movesLeft -= 1;
-		player.sendPlayerMove();
-	}
-	else {
-		player.sendNoMove();
+	if (data.player_id == player.id) {
+		console.log(data.player_id + "'s turn");
+		if (player.alive && player.movesLeft > 0) {
+			player.movesLeft -= 1;
+			console.log(data.player_id + ' has ' + player.movesLeft + 'moves left');
+			player.sendPlayerMove();
+		}
+		else {
+			player.sendNoMove();
+		}
 	}
 });
 
@@ -135,7 +126,7 @@ io.connect().on('playerTurn', function(data) {
  * player can update their own view.
  */
 io.connect().on('movePlayed', function(data) {
-	console.log('movePlayed by ' + data.playerId);
+	console.log('A move by' + data.player_id + 'was recognized by ' + player.id);
 });
 
 /**
@@ -143,7 +134,7 @@ io.connect().on('movePlayed', function(data) {
  * our own game state.
  */
 io.connect().on('playerDied', function(data) {
-	console.log('playerDied');
+	console.log(player.id + 'recognized that ' + data.player_id + 'died');
 });
 
 </script>

@@ -49,7 +49,7 @@
             android:theme="@android:style/Theme.NoTitleBar.Fullscreen">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.example.simcards.MainActivity" />
+                android:value="com.example.simcards.UsernameForm" />
         </activity>
     </application>
 
