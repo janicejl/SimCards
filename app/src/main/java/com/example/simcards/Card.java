@@ -18,7 +18,6 @@ public class Card {
 
     private Rect mCurrentPositionRect;
 
-	
 	String getRank() {
 		return rank;
 	}
@@ -26,11 +25,6 @@ public class Card {
 	String getSuit() {
 		return rank;
 	}
-	
-	int getValue() {
-		return value;
-	}
-	
 	int getX() {
 		return x_pos;
 	}
@@ -43,7 +37,7 @@ public class Card {
      * This gets the rectangle for the actual image in the bitmap
      */
 	Rect getBox() {
-		return new Rect(x_pos, x_pos, x_pos + card_width, y_pos + card_height);
+		return new Rect(x_pos, y_pos, x_pos + card_width, y_pos + card_height);
 	}
 	
 	void setValue(int aValue) {
@@ -51,8 +45,13 @@ public class Card {
 	}
 	
 	Card() {}
-	Card(String rk, String st, int val, int suitVal) {
-		this(rk, st, val, suitVal, 0, 0);
+	Card(String rk, String st, int value, int suitVal) {
+		rank = rk;
+		suit = st;
+		suits_picture_position = suitVal;
+		
+		x_pos = card_width * (value - 1);
+		y_pos = card_height * suits_picture_position;
 	}
 
     /**
