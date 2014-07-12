@@ -1,25 +1,29 @@
 package com.example.simcards;
 
+import android.graphics.Point;
 import android.graphics.Rect;
 
 public class Card {
-	final int card_width = 73;
-	final int card_height = 98;
-	
+	public static int card_width;
+	public static int card_height;
+    public static final Rect CARD_RECT = new Rect(0, 0, card_width, card_height);
+
 	String rank;
 	String suit;
 	int value;
 	int suits_picture_position;
-	
+
 	int x_pos;
 	int y_pos;
-	
+
+    private Rect mCurrentPositionRect;
+
 	String getRank() {
 		return rank;
 	}
 	
 	String getSuit() {
-		return rank;
+		return suit;
 	}
 	
 	public int getValue() {
@@ -33,7 +37,10 @@ public class Card {
 	int getY() {
 		return y_pos;
 	}
-	
+
+    /**
+     * This gets the rectangle for the actual image in the bitmap
+     */
 	Rect getBox() {
 		return new Rect(0, 0, 98, 73);
 	}
@@ -42,18 +49,48 @@ public class Card {
 		value = aValue;
 	}
 	
-	Card() {}
 	Card(String rk, String st, int val, int suitVal) {
 		rank = rk;
 		suit = st;
 		value = val;
 		suits_picture_position = suitVal;
-		
-		x_pos = card_width * (value - 1);
-		y_pos = card_height * suits_picture_position;
+
+		x_pos = 0;
+		y_pos = 0;
 	}
-	
+
+    /**
+     * Constructor containing the global positions for the cards
+     */
+    public Card(String rk, String st, int val, int suitVal, int positionX, int positionY) {
+        rank = rk;
+        suit = st;
+        value = val;
+        suits_picture_position = suitVal;
+
+        x_pos = card_width * (value - 1);
+        y_pos = card_height * suits_picture_position;
+
+        mCurrentPositionRect = new Rect(positionX, positionY,
+                positionX + card_width, positionY + card_height);
+    }
+
 	void print() {
 		System.out.println(rank + " of " + suit);
 	}
+
+    public Rect getPositionRect() {
+        return  mCurrentPositionRect;
+    }
+
+    public void setPositionRect(Rect r) {
+        mCurrentPositionRect = r;
+    }
+
+    /**
+     * Used for touch detection, will return true if the touch occurred on this card
+     */
+    public boolean containsPoint(Point p) {
+        return mCurrentPositionRect.contains(p.x, p.y);
+    }
 }

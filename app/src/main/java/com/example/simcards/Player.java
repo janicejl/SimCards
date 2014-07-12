@@ -9,19 +9,15 @@ import java.util.List;
 public class Player {
 
     //Represents the user's pile of cards.
-    private ArrayList<Card> pile;
+    private List<Card> pile;
 
     //Is the player still in the game or not?
     private boolean status;
 
-    //The game that the user is interacting with.
-    private Game game;
-
     //Optional attribute to represent the number of points
     private int points;
 
-    public Player(Game game) {
-        this.game = game;
+    public Player() {
         pile = new ArrayList<Card>();
     }
 
@@ -60,5 +56,9 @@ public class Player {
     public Card play(Card card) {
         pile.remove(card);
         return card;
+    }
+
+    public List<Card> getCards() {
+        return pile;
     }
 }

@@ -9,7 +9,7 @@ import android.graphics.Rect;
 import android.view.View;
 
 public class TestingView extends View {
-    Bitmap card_front = BitmapFactory.decodeResource(getResources(), R.drawable.cards);;
+    Bitmap card_front = BitmapFactory.decodeResource(getResources(), R.drawable.cards);
     Paint paint = new Paint();
 
     Card c = new Card("Spade", "Ten", 10, 1);
