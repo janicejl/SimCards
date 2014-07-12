@@ -4,8 +4,8 @@ import android.graphics.Point;
 import android.graphics.Rect;
 
 public class Card {
-	public static final int card_width = 74;
-	public static final int card_height = 118;
+	public static final int card_width = 73;
+	public static final int card_height = 98;
     public static final Rect CARD_RECT = new Rect(0, 0, card_width, card_height);
 
 	String rank;
@@ -22,7 +22,6 @@ public class Card {
 	String getRank() {
 		return rank;
 	}
-	*/
 	
 	String getSuit() {
 		return rank;
