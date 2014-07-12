@@ -171,7 +171,7 @@ public class GameView extends View {
         mTopPlayerCardCount = cardCounts[1];
         mRightPlayerCardCount = cardCounts[2];
 
-        if (mCurrentGame.hasWon()) {
+        if (mCurrentGame.shouldWeEndTheGame()) {
             showWin();
         }
 
