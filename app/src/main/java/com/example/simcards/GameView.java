@@ -4,7 +4,10 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
+<<<<<<< HEAD
 import android.graphics.Color;
+=======
+>>>>>>> origin/master
 import android.graphics.Paint;
 import android.graphics.Rect;
 import android.view.View;
@@ -18,6 +21,7 @@ public class GameView extends View {
 
 	public GameView(Context context) {
 		super(context);
+<<<<<<< HEAD
 	}
 
 	public void onDraw(Canvas canvas) {
@@ -33,4 +37,15 @@ public class GameView extends View {
     private void drawCards(Canvas canvas) {
         canvas.drawBitmap(card_front, c.getBox(), c.getBox(), paint);
     }
+=======
+		// TODO Auto-generated constructor stub
+		background = new Rect(0,0,
+				context.getResources().getDisplayMetrics().widthPixels,
+				context.getResources().getDisplayMetrics().heightPixels);
+	}
+
+	public void onDraw(Canvas canvas) {
+		canvas.drawBitmap(card_front, c.getBox(), background, paint);
+	}
+>>>>>>> origin/master
 }
