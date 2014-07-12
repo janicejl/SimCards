@@ -17,7 +17,7 @@
             android:name=".MainActivity"
             android:label="@string/app_name"
             android:screenOrientation="landscape"
-            android:theme="@android:style/Theme.Holo.NoActionBar.Fullscreen" >
+            android:theme="@android:style/Theme.NoTitleBar.Fullscreen" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -27,7 +27,8 @@
         <activity
             android:name=".CardacopiaInterface"
             android:label="CardacopiaInterface"
-            android:parentActivityName=".MainActivity" >
+            android:parentActivityName=".MainActivity"
+            android:theme="@android:style/Theme.NoTitleBar.Fullscreen" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.example.simcards.CardacopiaInterface" />
@@ -35,7 +36,8 @@
         <activity
             android:name=".Cardacopia"
             android:label="@string/title_activity_cardacopia"
-            android:parentActivityName=".MainActivity" >
+            android:parentActivityName=".MainActivity"
+            android:theme="@android:style/Theme.NoTitleBar.Fullscreen" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.example.simcards.Cardacopia" />
@@ -43,7 +45,8 @@
         <activity
             android:name=".UsernameForm"
             android:label="@string/title_activity_username_form"
-            android:parentActivityName=".MainActivity" >
+            android:parentActivityName=".MainActivity"
+            android:theme="@android:style/Theme.NoTitleBar.Fullscreen">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.example.simcards.MainActivity" />
