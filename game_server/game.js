@@ -45,7 +45,8 @@ function player_move(card) {
   console.log("received playerMove " + card);
   console.log("emit movePlayed " + card);
   gameSocket.emit('movePlayed', card);
-  gameSocket.broadcast.emit('movePlayed', card);
+  gameSocket.broadcast.emit('movePlayed', {player_id: turn_num % 4,
+                            card: card});
   if (game_valid) {
     get_next_valid_turn();
     console.log("emit playerTurn " + (turn_num % 4));
