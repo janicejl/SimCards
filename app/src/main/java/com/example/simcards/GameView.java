@@ -1,5 +1,6 @@
 package com.example.simcards;
 
+import android.app.Activity;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -18,6 +19,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.PopupWindow;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.games.Cardacopia;
@@ -28,6 +30,7 @@ import java.util.List;
 public class GameView extends View {
     private final static int CHOOSE_PLAYER_CARD = 1;
     private final static int WAIT_FOR_NEXT_PLAYER = 2;
+    private final static int END_STATE = -1;
     private final static boolean DISPLAY_OTHER_SCORES = true;
 
     private final static int BACKGROUND_COLOR = Color.parseColor("#002400");
@@ -43,8 +46,17 @@ public class GameView extends View {
     private final static int POPUP_WIDTH = 250;
     private final static int POPUP_BUTTON_BUFFER = 10;
     private final static int POPUP_BACKGROUND_COLOR = Color.argb(255, 128, 128, 128);
+    private final static int WIN_POPUP_WIDTH = 400;
+    private final static int WIN_POPUP_HEIGHT = 200;
     private final static int TEXT_BUFFER = 15;
     private final static float[] POPUP_OUTER_RECT = new float[] {5, 5, 5, 5, 5, 5, 5, 5};
+    private final static int[] PLAYER_COLORS = new int[] {Color.BLUE, Color.GREEN, Color.RED,
+            Color.BLACK};
+    private final static String LOSER_POPUP_MSG = "You lost, I am sorry :(";
+    private final static String NEXT_PLAYER_POPUP_MSG = "Next player please!!!";
+    private final static String WINNING_STRING = "Congrats for winning!!";
+    private final static String PROCEED_MENU_STRING = "Proceed to menu";
+    private final static long WIN_DELAY = 2000;
 
     private Cardacopia mCurrentGame;
     private Rect mCenterRect;
@@ -63,13 +75,23 @@ public class GameView extends View {
     private int mCurrentPlayerScore;
     private int mCurrentState;
     private PopupWindow mPopupWindow;
+    private Card mTopCard;
 
 	public GameView(Context context) {
 		super(context);
+        // Must load assets first to set card length and height
+        loadAssets();
+
+        setViewVariables();
+
+        setGameVariables();
+	}
+
+    private void setViewVariables() {
         int uiOptions = View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
                 | View.SYSTEM_UI_FLAG_FULLSCREEN;
         setSystemUiVisibility(uiOptions);
-        loadAssets();
+
         this.setOnTouchListener(new MyTouchListener());
         mScreenWidth = MainActivity.SCREEN_WIDTH;
         mScreenHeight = MainActivity.SCREEN_HEIGHT;
@@ -78,9 +100,11 @@ public class GameView extends View {
                 (mScreenWidth / 2) + (DECK_WIDTH / 2),
                 (mScreenHeight / 2) + (DECK_HEIGHT / 2));
 
-        mCurrentState = CHOOSE_PLAYER_CARD;
+        mPopupWindow = createPopupWindow(NEXT_PLAYER_POPUP_MSG, true);
+    }
 
-        mPopupWindow = createPopupWindow();
+    private void setGameVariables() {
+        mCurrentState = CHOOSE_PLAYER_CARD;
 
         List<Player> players = new ArrayList<Player>();
         for (int i = 0 ; i < 4 ; i++) {
@@ -89,29 +113,36 @@ public class GameView extends View {
         mCurrentGame = new Cardacopia(players, new Deck(), Game.DEAL_ALL_CARDS);
         mCurrentGame.deal();
 
+        mTopCard = null;
+
         mCurrentPlayer = mCurrentGame.getActivePlayer();
 
-        mLeftPlayerCardCount = 10;
-        mTopPlayerCardCount = 10;
-        mRightPlayerCardCount = 10;
+        int[] cardCounts = mCurrentGame.getCardNumberArray();
+        int[] scores = mCurrentGame.getScoreArray();
 
-        mLeftPlayerScore = 112;
-        mRightPlayerScore = 112;
-        mTopPlayerScore = 124;
-        mCurrentPlayerScore = 100;
-	}
+        mLeftPlayerCardCount = cardCounts[0];
+        mTopPlayerCardCount = cardCounts[1];
+        mRightPlayerCardCount = cardCounts[2];
 
-    private PopupWindow createPopupWindow() {
+        mLeftPlayerScore = scores[0];
+        mRightPlayerScore = scores[2];
+        mTopPlayerScore = scores[1];
+        mCurrentPlayerScore = mCurrentPlayer.getPoints();
+    }
+
+    private PopupWindow createPopupWindow(String message, final boolean switchPlayer) {
         Button popupButton = new Button(getContext());
-        popupButton.setText("Next Player Please!!!");
-        popupButton.setHeight(POPUP_HEIGHT - POPUP_BUTTON_BUFFER);
-        popupButton.setWidth(POPUP_WIDTH - POPUP_BUTTON_BUFFER);
+        popupButton.setText(message);
+        popupButton.setHeight(POPUP_HEIGHT);
+        popupButton.setWidth(POPUP_WIDTH);
         popupButton.setOnTouchListener(new OnTouchListener() {
             @Override
             public boolean onTouch(View view, MotionEvent motionEvent) {
                 mCurrentState = CHOOSE_PLAYER_CARD;
                 mPopupWindow.dismiss();
-                switchPlayer();
+                if (switchPlayer) {
+                    switchPlayer();
+                }
                 return true;
             }
         });
@@ -126,7 +157,63 @@ public class GameView extends View {
     }
 
     private void switchPlayer() {
+        mCurrentGame.setNextPlayer();
+        int[] scores = mCurrentGame.getScoreArray();
+        int[] cardCounts = mCurrentGame.getCardNumberArray();
+        mTopCard = mCurrentGame.getTopCard();
+        mCurrentPlayer = mCurrentGame.getCurrentPlayer();
+
+        mCurrentPlayerScore = mCurrentPlayer.getPoints();
+        mLeftPlayerScore = scores[0];
+        mTopPlayerScore = scores[1];
+        mRightPlayerScore = scores[2];
+        mLeftPlayerCardCount = cardCounts[0];
+        mTopPlayerCardCount = cardCounts[1];
+        mRightPlayerCardCount = cardCounts[2];
+
+        if (mCurrentGame.hasWon()) {
+            showWin();
+        }
+
+        if (!mCurrentGame.hasValidMove()) {
+            mCurrentState = WAIT_FOR_NEXT_PLAYER;
+            mPopupWindow = createPopupWindow(LOSER_POPUP_MSG, true);
+            mPopupWindow.showAsDropDown(this, mScreenWidth / 2 - (POPUP_WIDTH / 2),
+                    -1 * POPUP_HEIGHT);
+        }
+
         invalidate();
+    }
+
+    private void showWin() {
+        mCurrentState = END_STATE;
+        Button popupButton = new Button(getContext());
+        popupButton.setText("Proceed to menu");
+        popupButton.setHeight(POPUP_HEIGHT - POPUP_BUTTON_BUFFER);
+        popupButton.setWidth(POPUP_WIDTH - POPUP_BUTTON_BUFFER);
+        popupButton.setOnTouchListener(new OnTouchListener() {
+            long startTime = System.currentTimeMillis();
+
+            @Override
+            public boolean onTouch(View view, MotionEvent motionEvent) {
+                if (System.currentTimeMillis() - startTime >= WIN_DELAY) {
+                    ((Activity) getContext()).finish();
+                }
+                return true;
+            }
+        });
+        TextView textView = new TextView(getContext());
+        textView.setText(WINNING_STRING);
+        textView.setTextSize(100.0f);
+        LinearLayout linearLayout = new LinearLayout(getContext());
+        linearLayout.addView(textView);
+        linearLayout.addView(popupButton);
+
+//        RoundRectShape roundRectShape = new RoundRectShape(POPUP_OUTER_RECT, null, null);
+//        Drawable background = new ShapeDrawable(roundRectShape);
+//        linearLayout.setBackground(background);
+        PopupWindow window = new PopupWindow(linearLayout, POPUP_WIDTH, POPUP_HEIGHT);
+        window.setContentView(linearLayout);
     }
 
     private void loadAssets() {
@@ -169,7 +256,7 @@ public class GameView extends View {
             // right
             String s = Integer.toString(mRightPlayerScore);
             canvas.drawText(s,
-                    mScreenWidth - Card.card_height - TEXT_BUFFER - (SCORE_SIZE * (s.length() - 1)),
+                    mScreenWidth - Card.card_height - TEXT_BUFFER - (SCORE_SIZE * (s.length())),
                     mScreenHeight / 2 - (SCORE_SIZE), p);
         }
     }
@@ -209,39 +296,49 @@ public class GameView extends View {
 
     private void drawOpponentCards(Canvas canvas) {
         // Left Player's hand
-        int leftSpacing = Math.min(Card.card_width,
-                (mScreenHeight - Card.card_width - (2 * PLAYER_BUFFERS)) /
-                        (mLeftPlayerCardCount));
-        int xPos = SCREEN_BUFFER;
-        for (int i = 0 ; i < mLeftPlayerCardCount ; i++) {
-            Rect dstRect = new Rect(xPos, i * leftSpacing + PLAYER_BUFFERS, xPos + Card.card_height,
-                    i * leftSpacing + PLAYER_BUFFERS + Card.card_width);
-            canvas.drawBitmap(mCardBackRotatedBitmap, null, dstRect, null);
+        if (mLeftPlayerCardCount != 0) {
+            int leftSpacing = Math.min(Card.card_width,
+                    (mScreenHeight - Card.card_width - (2 * PLAYER_BUFFERS)) /
+                            (mLeftPlayerCardCount));
+            int xPos = SCREEN_BUFFER;
+            for (int i = 0 ; i < mLeftPlayerCardCount ; i++) {
+                Rect dstRect = new Rect(xPos, i * leftSpacing + PLAYER_BUFFERS, xPos + Card.card_height,
+                        i * leftSpacing + PLAYER_BUFFERS + Card.card_width);
+                canvas.drawBitmap(mCardBackRotatedBitmap, null, dstRect, null);
+            }
         }
 
         // Top Player's hand
-        int topSpacing = Math.min(Card.card_width,
-                (mScreenWidth - (2 * PLAYER_BUFFERS)) / (mTopPlayerCardCount + 1));
-        for (int i = 0 ; i <mTopPlayerCardCount ; i++) {
-            Rect dstRect = new Rect(i * topSpacing + PLAYER_BUFFERS, SCREEN_BUFFER,
-                    i * topSpacing + PLAYER_BUFFERS + Card.card_width,
-                    SCREEN_BUFFER + Card.card_height);
-            canvas.drawBitmap(mCardBackBitmap, null, dstRect, null);
+        if (mTopPlayerCardCount != 0) {
+            int topSpacing = Math.min(Card.card_width,
+                    (mScreenWidth - (2 * PLAYER_BUFFERS)) / (mTopPlayerCardCount + 1));
+            for (int i = 0 ; i <mTopPlayerCardCount ; i++) {
+                Rect dstRect = new Rect(i * topSpacing + PLAYER_BUFFERS, SCREEN_BUFFER,
+                        i * topSpacing + PLAYER_BUFFERS + Card.card_width,
+                        SCREEN_BUFFER + Card.card_height);
+                canvas.drawBitmap(mCardBackBitmap, null, dstRect, null);
+            }
         }
 
         // Right Player's hand
-        int rightSpacing = Math.min(Card.card_width,
-                (mScreenHeight - Card.card_width - (2 * PLAYER_BUFFERS)) / mRightPlayerCardCount);
-        xPos = mScreenWidth - SCREEN_BUFFER - Card.card_height;
-        for (int i = 0 ; i < mRightPlayerCardCount ; i++) {
-            Rect dstRect = new Rect(xPos, i * rightSpacing + PLAYER_BUFFERS,
-                    xPos + Card.card_height, i * rightSpacing + PLAYER_BUFFERS + Card.card_width);
-            canvas.drawBitmap(mCardBackBitmap, null, dstRect, null);
+        if (mRightPlayerCardCount != 0) {
+            int rightSpacing = Math.min(Card.card_width,
+                    (mScreenHeight - Card.card_width - (2 * PLAYER_BUFFERS)) / mRightPlayerCardCount);
+            int xPos = mScreenWidth - SCREEN_BUFFER - Card.card_height;
+            for (int i = 0 ; i < mRightPlayerCardCount ; i++) {
+                Rect dstRect = new Rect(xPos, i * rightSpacing + PLAYER_BUFFERS,
+                        xPos + Card.card_height, i * rightSpacing + PLAYER_BUFFERS + Card.card_width);
+                canvas.drawBitmap(mCardBackBitmap, null, dstRect, null);
+            }
         }
     }
 
     private void drawDeck(Canvas canvas) {
-        canvas.drawBitmap(mCardBackBitmap, null, mCenterRect, null);
+        if (mTopCard == null) {
+            canvas.drawBitmap(mCardBackBitmap, null, mCenterRect, null);
+        } else {
+            canvas.drawBitmap(mCardBitmap, mTopCard.getBox(), mCenterRect, null);
+        }
     }
 
     private void drawBackground(Canvas canvas) {
@@ -263,7 +360,8 @@ public class GameView extends View {
                     Card c = mCurrentPlayer.getCards().get(index);
                     if (mCurrentGame.makeMove(c)) {
                         mCurrentState = WAIT_FOR_NEXT_PLAYER;
-                        mPopupWindow = createPopupWindow();
+                        mTopCard = c;
+                        mPopupWindow = createPopupWindow(NEXT_PLAYER_POPUP_MSG, true);
                         mPopupWindow.showAsDropDown(view, mScreenWidth / 2 - (POPUP_WIDTH / 2),
                                 -1 * mScreenHeight / 2 - (POPUP_HEIGHT / 2));
                         invalidate();

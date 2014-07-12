@@ -49,6 +49,10 @@ public class Player {
         return status;
     }
 
+    public void setStatus(boolean b) {
+        status = b;
+    }
+
     public int getPoints()
     {
         return points;

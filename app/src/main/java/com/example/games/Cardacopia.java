@@ -70,9 +70,9 @@ public class Cardacopia extends Game {
         Player nextPlayer = nextPlayer();
         int count = 0;
         while (nextPlayer != activePlayer){
-           countArr[count] = nextPlayer.getCards().size();
-           nextPlayer = nextPlayer();
-           count++;
+            countArr[count] = nextPlayer.getCards().size();
+            nextPlayer = nextPlayer();
+            count++;
         }
 
         return countArr;
@@ -80,11 +80,14 @@ public class Cardacopia extends Game {
 
     private boolean hasValidMove() {
         for (Card c : activePlayer.getCards()) {
+            if (!activePlayer.getStatus()) {
+                return false;
+            }
             if (isValidMove(c)) {
                 return true;
             }
         }
-
+        activePlayer.setStatus(false);
         return false;
     }
 
