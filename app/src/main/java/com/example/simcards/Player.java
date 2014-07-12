@@ -21,9 +21,13 @@ public class Player {
     private String playerName = "";
 
     public Player() {
+        this("Player : " + playerCount);
+    }
+
+    public Player(String name) {
         pile = new ArrayList<Card>();
         status = true;
-        playerName = "Player" + playerCount;
+        playerName = name;
         playerCount++;
     }
 
