@@ -35,7 +35,7 @@ public class Card {
 	}
 	
 	Rect getBox() {
-		return new Rect(0, 0, 98, 73);
+		return new Rect(0, 0, 74, 118);
 	}
 	
 	void setValue(int aValue) {
