@@ -29,8 +29,8 @@ public class MainActivity extends Activity {
         SCREEN_WIDTH = size.x;
 	}
 
-    public void startCardacopia(View view) {
-        Intent intent = new Intent(this, CardacopiaInterface.class);
+    public void GoToUsernameForm(View view) {
+        Intent intent = new Intent(this, UsernameForm.class);
         startActivity(intent);
     }
 
