@@ -18,10 +18,12 @@ public class TestingView extends View {
     public TestingView(Context context) {
         super(context);
         // TODO Auto-generated constructor stub
-
+        /*
         background = new Rect(0,0,
                 context.getResources().getDisplayMetrics().widthPixels,
                 context.getResources().getDisplayMetrics().heightPixels);
+                */
+        background = new Rect(0,0,73,98);
 
 
     }

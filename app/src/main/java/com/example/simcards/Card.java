@@ -13,19 +13,15 @@ public class Card {
 	
 	int x_pos;
 	int y_pos;
-	
+	/*
 	String getRank() {
 		return rank;
 	}
+	*/
 	
 	String getSuit() {
 		return rank;
 	}
-	
-	int getValue() {
-		return value;
-	}
-	
 	int getX() {
 		return x_pos;
 	}
@@ -35,7 +31,7 @@ public class Card {
 	}
 	
 	Rect getBox() {
-		return new Rect(0, 0, 74, 118);
+		return new Rect(x_pos, y_pos, x_pos + card_width, y_pos + card_height);
 	}
 	
 	void setValue(int aValue) {
@@ -43,10 +39,9 @@ public class Card {
 	}
 	
 	Card() {}
-	Card(String rk, String st, int val, int suitVal) {
+	Card(String rk, String st, int value, int suitVal) {
 		rank = rk;
 		suit = st;
-		value = val;
 		suits_picture_position = suitVal;
 		
 		x_pos = card_width * (value - 1);
