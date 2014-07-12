@@ -14,6 +14,7 @@ import android.graphics.drawable.Drawable;
 import android.graphics.drawable.ShapeDrawable;
 import android.graphics.drawable.shapes.RectShape;
 import android.graphics.drawable.shapes.RoundRectShape;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
@@ -30,6 +31,7 @@ import java.util.List;
 public class GameView extends View {
     private final static int CHOOSE_PLAYER_CARD = 1;
     private final static int WAIT_FOR_NEXT_PLAYER = 2;
+    private final static int NOT_A_PLAYER = 3;
     private final static int END_STATE = -1;
     private final static boolean DISPLAY_OTHER_SCORES = true;
 
@@ -143,6 +145,7 @@ public class GameView extends View {
                 if (switchPlayer) {
                     switchPlayer();
                 }
+                invalidate();
                 return true;
             }
         });
@@ -157,6 +160,9 @@ public class GameView extends View {
     }
 
     private void switchPlayer() {
+        if (mCurrentGame.shouldWeEndTheGame()) {
+            showWin();
+        }
         mCurrentGame.setNextPlayer();
         int[] scores = mCurrentGame.getScoreArray();
         int[] cardCounts = mCurrentGame.getCardNumberArray();
@@ -171,24 +177,18 @@ public class GameView extends View {
         mTopPlayerCardCount = cardCounts[1];
         mRightPlayerCardCount = cardCounts[2];
 
-        if (mCurrentGame.shouldWeEndTheGame()) {
-            showWin();
-        }
-
         if (!mCurrentGame.hasValidMove()) {
-            mCurrentState = WAIT_FOR_NEXT_PLAYER;
+            mCurrentState = NOT_A_PLAYER;
             mPopupWindow = createPopupWindow(LOSER_POPUP_MSG, true);
             mPopupWindow.showAsDropDown(this, mScreenWidth / 2 - (POPUP_WIDTH / 2),
                     -1 * POPUP_HEIGHT);
         }
-
-        invalidate();
     }
 
     private void showWin() {
         mCurrentState = END_STATE;
         Button popupButton = new Button(getContext());
-        popupButton.setText("Proceed to menu");
+        popupButton.setText("Winner is !!!!");
         popupButton.setHeight(POPUP_HEIGHT - POPUP_BUTTON_BUFFER);
         popupButton.setWidth(POPUP_WIDTH - POPUP_BUTTON_BUFFER);
         popupButton.setOnTouchListener(new OnTouchListener() {
@@ -202,11 +202,7 @@ public class GameView extends View {
                 return true;
             }
         });
-        TextView textView = new TextView(getContext());
-        textView.setText(WINNING_STRING);
-        textView.setTextSize(100.0f);
         LinearLayout linearLayout = new LinearLayout(getContext());
-        linearLayout.addView(textView);
         linearLayout.addView(popupButton);
 
 //        RoundRectShape roundRectShape = new RoundRectShape(POPUP_OUTER_RECT, null, null);
@@ -214,6 +210,8 @@ public class GameView extends View {
 //        linearLayout.setBackground(background);
         PopupWindow window = new PopupWindow(linearLayout, POPUP_WIDTH, POPUP_HEIGHT);
         window.setContentView(linearLayout);
+        window.showAsDropDown(this, mScreenWidth / 2, -1 * mScreenHeight / 2);
+        mCurrentState = END_STATE;
     }
 
     private void loadAssets() {
@@ -327,7 +325,7 @@ public class GameView extends View {
             for (int i = 0 ; i < mRightPlayerCardCount ; i++) {
                 Rect dstRect = new Rect(xPos, i * rightSpacing + PLAYER_BUFFERS,
                         xPos + Card.card_height, i * rightSpacing + PLAYER_BUFFERS + Card.card_width);
-                canvas.drawBitmap(mCardBackBitmap, null, dstRect, null);
+                canvas.drawBitmap(mCardBackRotatedBitmap, null, dstRect, null);
             }
         }
     }
@@ -358,12 +356,12 @@ public class GameView extends View {
                     }
                     Card c = mCurrentPlayer.getCards().get(index);
                     if (mCurrentGame.makeMove(c)) {
+                        postInvalidate();
                         mCurrentState = WAIT_FOR_NEXT_PLAYER;
                         mTopCard = c;
                         mPopupWindow = createPopupWindow(NEXT_PLAYER_POPUP_MSG, true);
                         mPopupWindow.showAsDropDown(view, mScreenWidth / 2 - (POPUP_WIDTH / 2),
                                 -1 * mScreenHeight / 2 - (POPUP_HEIGHT / 2));
-                        invalidate();
                     }
                     break;
 

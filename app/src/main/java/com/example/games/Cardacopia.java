@@ -17,10 +17,13 @@ public class Cardacopia extends Game {
      */
     ArrayList<Card> middlePile = new ArrayList<Card>();
 
+    private int mPlayersLeft;
+
     private Card mTopCard;
 
     public Cardacopia(List<Player> players, Deck deck, int dealNumber) {
         super(players, deck, dealNumber);
+        mPlayersLeft = 4;
     }
 
     @Override
@@ -79,15 +82,16 @@ public class Cardacopia extends Game {
     }
 
     public boolean hasValidMove() {
+        if (!activePlayer.getStatus()) {
+            return false;
+        }
         for (Card c : activePlayer.getCards()) {
-            if (!activePlayer.getStatus()) {
-                return false;
-            }
             if (isValidMove(c)) {
                 return true;
             }
         }
         activePlayer.setStatus(false);
+        mPlayersLeft--;
         return false;
     }
 
@@ -117,13 +121,7 @@ public class Cardacopia extends Game {
 
     @Override
     public boolean shouldWeEndTheGame(){
-        int playersPlaying = 0;
-        for (Player p : players) {
-            if (p.getStatus()) {
-                playersPlaying++;
-            }
-        }
-        return playersPlaying > 1;
+        return mPlayersLeft <= 1;
     }
 
     @Override

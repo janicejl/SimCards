@@ -100,11 +100,7 @@ public abstract class Game {
         }
 
         Player nextActivePlayer = iterator.next();
-        if (nextActivePlayer.getStatus()) {
-            return nextActivePlayer;
-        }
-
-        return nextPlayer();
+        return nextActivePlayer;
     }
 
     public void reset() {
