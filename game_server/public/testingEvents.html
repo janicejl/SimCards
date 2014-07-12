@@ -5,18 +5,22 @@
 <p>Click the button to trigger a function.</p>
 
 <button id='firstButton'>First Button</button>
+<script src="/socket.io/socket.io.js"></script>
 
 
 <script>
-var events = require('events');
 
 var onClick = function() {
-    this.emit('playerConnected')
+	io.connect().emit('playerConnected');
     console.log('emitted playerConnected');
 };
 
 var firstButton = document.getElementById('firstButton');
 firstButton.addEventListener('click', onClick);
+
+io.connect().on('secondMessage', function() {
+	console.log('WE GOT THIS BROSKI');
+});
 </script>
 
 </body>
