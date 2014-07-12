@@ -154,4 +154,7 @@ public class Cardacopia extends Game {
 
         return 0;
     }
+
+    public void resetter() {
+    }
 }

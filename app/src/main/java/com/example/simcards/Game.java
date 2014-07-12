@@ -116,4 +116,11 @@ public abstract class Game {
 
         return nextPlayer();
     }
+
+    public void reset() {
+        deck.shuffle();
+        for (Player p : players) {
+            p.reset();
+        }
+    };
 }
