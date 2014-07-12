@@ -10,7 +10,9 @@ import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
 import android.view.Menu;
 
+import android.content.Intent;
 import android.view.Display;
+import android.view.View;
 
 public class MainActivity extends Activity {
     public static int SCREEN_WIDTH;
@@ -25,11 +27,12 @@ public class MainActivity extends Activity {
         display.getSize(size);
         SCREEN_HEIGHT = size.y;
         SCREEN_WIDTH = size.x;
-		
-		GameView gameview = new GameView(this);
-		gameview.setBackgroundColor(Color.WHITE);
-		setContentView(gameview);
 	}
+
+    public void startCardacopia(View view) {
+        Intent intent = new Intent(this, CardacopiaInterface.class);
+        startActivity(intent);
+    }
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
