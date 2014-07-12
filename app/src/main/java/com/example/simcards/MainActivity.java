@@ -2,15 +2,8 @@ package com.example.simcards;
 
 import android.os.Bundle;
 import android.app.Activity;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.Canvas;
 import android.graphics.Color;
-import android.graphics.drawable.BitmapDrawable;
-import android.util.Log;
 import android.view.Menu;
-import android.view.View;
-import android.view.Window;
 
 public class MainActivity extends Activity {
 
@@ -18,14 +11,10 @@ public class MainActivity extends Activity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
-
-		TestingView testview = new TestingView(this);
-		testview.setBackgroundColor(Color.WHITE);
-		setContentView(testview);
-		/*
-        View content = getWindow().findViewById(Window.ID_ANDROID_CONTENT);
-        Log.d("DISPLAY", content.getWidth() + " x " + content.getHeight());
-        */
+		
+		GameView gameview = new GameView(this);
+		gameview.setBackgroundColor(Color.WHITE);
+		setContentView(gameview);
 	}
 
 	@Override

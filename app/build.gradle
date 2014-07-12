@@ -6,7 +6,7 @@ android {
 
     defaultConfig {
         applicationId "com.example.simcards"
-        minSdkVersion 8
+        minSdkVersion 17
         targetSdkVersion 17
     }
 
