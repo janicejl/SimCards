@@ -9,6 +9,9 @@ import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.Point;
 import android.graphics.Rect;
+import android.graphics.drawable.Drawable;
+import android.graphics.drawable.ShapeDrawable;
+import android.graphics.drawable.shapes.RectShape;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
@@ -26,12 +29,17 @@ public class GameView extends View {
     private final static int BACKGROUND_COLOR = Color.GREEN;
     private final static int SCORE_COLOR = Color.WHITE;
     private final static int SCORE_COLOR_OUTLINE = Color.BLACK;
+    private final static float SCORE_SIZE = 80.0f;
+    private final static float SCORE_SIZE_OUTLINE = 30.5f;
     private final static int PLAYER_BUFFERS = 200;
     private final static int SCREEN_BUFFER = 0;
     private final static int DECK_WIDTH = 180;
     private final static int DECK_HEIGHT = 240;
     private final static int POPUP_HEIGHT = 150;
     private final static int POPUP_WIDTH = 250;
+    private final static int POPUP_BUTTON_BUFFER = 10;
+    private final static int POPUP_BACKGROUND_COLOR = Color.argb(255, 128, 128, 128);
+    private final static int TEXT_BUFFER = 15;
 
     private Rect mCenterRect;
     private Bitmap mCardBitmap;
@@ -78,15 +86,17 @@ public class GameView extends View {
         mTopPlayerCardCount = 10;
         mRightPlayerCardCount = 10;
 
-        mLeftPlayerScore = 2;
-        mRightPlayerCardCount = 12;
-        mTopPlayerScore = 24;
+        mLeftPlayerScore = 112;
+        mRightPlayerScore = 112;
+        mTopPlayerScore = 124;
         mCurrentPlayerScore = 100;
 	}
 
     private PopupWindow createPopupWindow() {
         Button popupButton = new Button(getContext());
         popupButton.setText("Next Player Please!!!");
+        popupButton.setHeight(POPUP_HEIGHT - POPUP_BUTTON_BUFFER);
+        popupButton.setWidth(POPUP_WIDTH - POPUP_BUTTON_BUFFER);
         popupButton.setOnTouchListener(new OnTouchListener() {
             @Override
             public boolean onTouch(View view, MotionEvent motionEvent) {
@@ -98,6 +108,8 @@ public class GameView extends View {
         });
         LinearLayout linearLayout = new LinearLayout(getContext());
         linearLayout.addView(popupButton);
+//        Drawable background = new ShapeDrawable(new RectShape());
+//        linearLayout.setBackground();
         PopupWindow window = new PopupWindow(linearLayout, POPUP_WIDTH, POPUP_HEIGHT);
         window.setContentView(linearLayout);
         return window;
@@ -130,9 +142,25 @@ public class GameView extends View {
     private void drawScores(Canvas canvas) {
         Paint p = new Paint();
         p.setColor(SCORE_COLOR);
+        p.setTextSize(SCORE_SIZE);
+
+        canvas.drawText("" + mCurrentPlayerScore, mScreenWidth / 2 - (SCORE_SIZE),
+                mScreenHeight - SCREEN_BUFFER - Card.card_height - TEXT_BUFFER, p);
 
         if (DISPLAY_OTHER_SCORES) {
+            // left
+            canvas.drawText("" + mLeftPlayerScore, Card.card_height + TEXT_BUFFER,
+                    mScreenHeight / 2 - (SCORE_SIZE), p);
 
+            // top
+            canvas.drawText("" + mTopPlayerScore, mScreenWidth / 2 - (SCORE_SIZE),
+                    Card.card_height + TEXT_BUFFER + SCORE_SIZE, p);
+
+            // right
+            String s = Integer.toString(mRightPlayerScore);
+            canvas.drawText(s,
+                    mScreenWidth - Card.card_height - TEXT_BUFFER - (SCORE_SIZE * (s.length() - 1)),
+                    mScreenHeight / 2 - (SCORE_SIZE), p);
         }
     }
 
