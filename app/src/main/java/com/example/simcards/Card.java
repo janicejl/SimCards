@@ -12,7 +12,7 @@ public class Card {
 	String suit;
 	int value;
 	int suits_picture_position;
-	
+
 	int x_pos;
 	int y_pos;
 
@@ -23,7 +23,7 @@ public class Card {
 	}
 	
 	String getSuit() {
-		return rank;
+		return suit;
 	}
 	int getX() {
 		return x_pos;
@@ -49,7 +49,7 @@ public class Card {
 		rank = rk;
 		suit = st;
 		suits_picture_position = suitVal;
-		
+
 		x_pos = card_width * (value - 1);
 		y_pos = card_height * suits_picture_position;
 	}
