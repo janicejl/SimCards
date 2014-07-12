@@ -1,0 +1,9 @@
+{
+  "name": "SimCardsGameServer",
+  "version": "0.0.1",
+  "description": "sim card game server",
+  "dependencies": {
+    "socket.io": "~1.0.6",
+    "express": "~4.6.0"
+  }
+}
