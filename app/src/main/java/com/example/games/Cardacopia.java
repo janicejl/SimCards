@@ -32,9 +32,9 @@ public class Cardacopia extends Game {
 
     }
 
+    @Override
     //only called after game is over
     public Player getWinner(){
-
         Player mostAwesomePlayer = players.get(0);
         int topScore = mostAwesomePlayer.getPoints();
 
@@ -46,9 +46,6 @@ public class Cardacopia extends Game {
         }
 
         return mostAwesomePlayer;
-    }
-    public Player getCurrentPlayer() {
-        return activePlayer;
     }
 
     public Card getTopCard() {
@@ -62,10 +59,12 @@ public class Cardacopia extends Game {
         while (nextPlayer != activePlayer){
             scoreArr[count] = nextPlayer.getPoints();
             nextPlayer = nextPlayer();
+            count++;
         }
 
         return scoreArr;
     }
+
     public int[] getCardNumberArray() {
         int[] countArr = new int[3];
         Player nextPlayer = nextPlayer();
@@ -73,14 +72,10 @@ public class Cardacopia extends Game {
         while (nextPlayer != activePlayer){
            countArr[count] = nextPlayer.getCards().size();
            nextPlayer = nextPlayer();
+           count++;
         }
 
         return countArr;
-    }
-
-    @Override
-    public boolean hasWon() {
-        return false;
     }
 
     private boolean hasValidMove() {
@@ -97,6 +92,7 @@ public class Cardacopia extends Game {
         return compareCards(c, mTopCard) > 0;
     }
 
+    @Override
     public boolean makeMove(Card c) {
         if (mTopCard == null) {
             mTopCard = c;
@@ -116,6 +112,7 @@ public class Cardacopia extends Game {
         }
     }
 
+    @Override
     public boolean shouldWeEndTheGame(){
         int playersPlaying = 0;
         for (Player p : players) {
@@ -126,18 +123,13 @@ public class Cardacopia extends Game {
         return playersPlaying > 1;
     }
 
+    @Override
     public void setNextPlayer() {
         activePlayer = nextPlayer();
     }
 
     @Override
-    //return if player has a valid move
-    public boolean shouldPlayerContinue() {
-        return false;
-    }
-
     public int compareCards(Card a, Card b) {
-
         if(a.getValue() > b.getValue()) {
             return a.getValue() - b.getValue();
         }
@@ -153,8 +145,5 @@ public class Cardacopia extends Game {
         }
 
         return 0;
-    }
-
-    public void resetter() {
     }
 }
