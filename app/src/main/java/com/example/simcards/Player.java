@@ -17,6 +17,9 @@ public class Player {
     //The game that the user is interacting with.
     private Game game;
 
+    //Optional attribute to represent the number of points
+    private int points;
+
     public Player(Game game) {
         this.game = game;
         pile = new ArrayList<Card>();
@@ -30,6 +33,17 @@ public class Player {
         return status;
     }
 
+    public int getPoints()
+    {
+        return points;
+    }
+
+    //Add points to the player's total and return the new number of points
+    public int addPoints(int addPoints) {
+        points += addPoints;
+        return points;
+    }
+
     //Loser gets kicked out of game.
     public void kickOut() {
         status = false;
@@ -37,4 +51,14 @@ public class Player {
 
     //YOU WIN!!!
     public void celebrate() {}
+
+    public Card play() {
+       Card c = pile.get(0);
+        return play(c);
+    }
+
+    public Card play(Card card) {
+        pile.remove(card);
+        return card;
+    }
 }
