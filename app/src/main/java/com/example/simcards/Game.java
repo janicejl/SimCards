@@ -50,6 +50,18 @@ public abstract class Game {
         }
     }
 
+    public Player getCurrentPlayer() {
+        return activePlayer;
+    }
+
+    public abstract boolean makeMove(Card card);
+
+    public abstract boolean shouldWeEndTheGame();
+
+    public abstract int compareCards(Card one, Card two);
+
+    public abstract void setNextPlayer();
+
     private void realDeal() {
         int total = players.size() * dealNumber;
         if (dealNumber >= 52) {
@@ -64,35 +76,13 @@ public abstract class Game {
         }
     }
 
-    //Executes one turn in the game;
-    public void turn() {
-        executeTurn();
-        if (hasWon()) {
-            activePlayer.celebrate();
-            isActiveGame = false;
-        }
-       else {
-           if (!shouldPlayerContinue()) {
-               activePlayer.kickOut();
-           }
-
-            activePlayer = nextPlayer();
-        }
-    }
-
     public abstract void executeTurn();
-
-    //Determines if active player has won based off of game rules
-    public abstract boolean hasWon();
-
-    //Called at the end of a turn. Uses game rules to determine if player's status should change
-    //NOTE: this should be called after hasWon(). This should assume that the player hasn't won the
-    // game.
-    public abstract boolean shouldPlayerContinue();
 
     public Player getActivePlayer() {
         return activePlayer;
     }
+
+    public abstract Player getWinner();
 
     //Returns if the active player is still in the game.
     public boolean getActivePlayerStatus() {
@@ -105,6 +95,9 @@ public abstract class Game {
      * called.
      */
     public Player nextPlayer() {
+        if (hasWon()) {
+            return null;
+        }
         if (!iterator.hasNext()) {
             iterator = players.iterator();
         }
@@ -116,4 +109,11 @@ public abstract class Game {
 
         return nextPlayer();
     }
+
+    public void reset() {
+        deck.shuffle();
+        for (Player p : players) {
+            p.reset();
+        }
+    };
 }

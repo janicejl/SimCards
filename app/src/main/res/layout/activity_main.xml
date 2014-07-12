@@ -6,11 +6,34 @@
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
-    tools:context=".MainActivity" >
+    android:background="#002400"
+    tools:context=".MainActivity"
+    style="@android:style/MediaButton">
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/hello_world" />
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:text="SimCards"
+        android:fontFamily="sans-serif-light"
+        android:textSize="60sp"
+        android:id="@+id/title"
+        android:layout_below="@+id/textView2"
+        android:layout_centerHorizontal="true"
+        android:singleLine="false"
+        android:textColor="#CC9900" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Cardacopia"
+        android:textSize="20sp"
+        android:fontFamily="sans-serif-light"
+        android:onClick="startCardacopia"
+        android:id="@+id/button"
+        android:width="300dip"
+        android:height="80dip"
+        android:layout_centerVertical="true"
+        android:layout_centerHorizontal="true"/>
 
 </RelativeLayout>

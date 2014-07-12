@@ -8,6 +8,7 @@ import java.util.List;
  */
 public class Player {
 
+    private static int playerCount = 1;
     //Represents the user's pile of cards.
     private List<Card> pile;
 
@@ -17,8 +18,27 @@ public class Player {
     //Optional attribute to represent the number of points
     private int points;
 
+    private String playerName = "";
+
     public Player() {
         pile = new ArrayList<Card>();
+        status = true;
+        playerName = "Player" + playerCount;
+        playerCount++;
+    }
+
+    public void reset() {
+        status = true;
+        pile.clear();
+        points = 0;
+    }
+
+    public void setName(String str){
+        playerName = str;
+    }
+
+    public String getName() {
+        return playerName;
     }
 
     public void addCard(Card card) {
@@ -27,6 +47,10 @@ public class Player {
 
     public boolean getStatus() {
         return status;
+    }
+
+    public void setStatus(boolean b) {
+        status = b;
     }
 
     public int getPoints()

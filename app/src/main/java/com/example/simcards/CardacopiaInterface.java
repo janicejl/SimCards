@@ -10,29 +10,29 @@ import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
 import android.view.Menu;
 
-import android.content.Intent;
 import android.view.Display;
-import android.view.View;
+import android.view.Window;
 
-public class MainActivity extends Activity {
+public class CardacopiaInterface extends Activity {
     public static int SCREEN_WIDTH;
     public static int SCREEN_HEIGHT;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.activity_main);
+        getWindow().requestFeature(Window.FEATURE_ACTION_BAR);
+        getActionBar().hide();
+		setContentView(R.layout.activity_cardacopia);
         Display display = getWindowManager().getDefaultDisplay();
         Point size = new Point();
         display.getSize(size);
         SCREEN_HEIGHT = size.y;
         SCREEN_WIDTH = size.x;
+		
+		GameView gameview = new GameView(this);
+		gameview.setBackgroundColor(Color.parseColor("#002400"));
+		setContentView(gameview);
 	}
-
-    public void startCardacopia(View view) {
-        Intent intent = new Intent(this, CardacopiaInterface.class);
-        startActivity(intent);
-    }
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {

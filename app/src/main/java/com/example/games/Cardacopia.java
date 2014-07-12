@@ -33,25 +33,76 @@ public class Cardacopia extends Game {
     }
 
     @Override
-    public boolean hasWon() {
-        return false;
+    //only called after game is over
+    public Player getWinner(){
+        Player mostAwesomePlayer = players.get(0);
+        int topScore = mostAwesomePlayer.getPoints();
+
+        for (Player p : players) {
+           if (p.getPoints() > topScore){
+               mostAwesomePlayer = p;
+               topScore = p.getPoints();
+           }
+        }
+
+        return mostAwesomePlayer;
     }
 
-    public boolean hasValidMove() {
+    public Card getTopCard() {
+        return mTopCard;
+    }
+
+    public int[] getScoreArray() {
+        int[] scoreArr = new int[3];
+        Player nextPlayer = nextPlayer();
+        int count = 0;
+        while (nextPlayer != activePlayer){
+            scoreArr[count] = nextPlayer.getPoints();
+            nextPlayer = nextPlayer();
+            count++;
+        }
+
+        return scoreArr;
+    }
+
+    public int[] getCardNumberArray() {
+        int[] countArr = new int[3];
+        Player nextPlayer = nextPlayer();
+        int count = 0;
+        while (nextPlayer != activePlayer){
+            countArr[count] = nextPlayer.getCards().size();
+            nextPlayer = nextPlayer();
+            count++;
+        }
+
+        return countArr;
+    }
+
+    private boolean hasValidMove() {
         for (Card c : activePlayer.getCards()) {
+            if (!activePlayer.getStatus()) {
+                return false;
+            }
             if (isValidMove(c)) {
                 return true;
             }
         }
-
+        activePlayer.setStatus(false);
         return false;
     }
 
-    public boolean isValidMove(Card c) {
+    private boolean isValidMove(Card c) {
         return compareCards(c, mTopCard) > 0;
     }
 
+    @Override
     public boolean makeMove(Card c) {
+        if (mTopCard == null) {
+            mTopCard = c;
+            activePlayer.play(c);
+            return true;
+        }
+
         int comparison = compareCards(c, mTopCard);
         if (comparison == 0) {
             return false;
@@ -64,18 +115,24 @@ public class Cardacopia extends Game {
         }
     }
 
+    @Override
+    public boolean shouldWeEndTheGame(){
+        int playersPlaying = 0;
+        for (Player p : players) {
+            if (p.getStatus()) {
+                playersPlaying++;
+            }
+        }
+        return playersPlaying > 1;
+    }
+
+    @Override
     public void setNextPlayer() {
         activePlayer = nextPlayer();
     }
 
     @Override
-    //return if player has a valid move
-    public boolean shouldPlayerContinue() {
-        return false;
-    }
-
     public int compareCards(Card a, Card b) {
-
         if(a.getValue() > b.getValue()) {
             return a.getValue() - b.getValue();
         }
