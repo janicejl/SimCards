@@ -23,14 +23,14 @@ class Deck {
 				"Seven", "Six", "Five", "Four", "Three", "Two", "Ace"
 		};
 		String suits[] = {
-				"Spades", "Hearts", "Clubs", "Diamonds"
+				"Clubs","Spades" ,"Hearts", "Diamonds"
 		};
 		int values[] = {
 				13, 12, 11, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1
 		};
 		top = 0;
 		for (int i = 0; i < 52; i++) {
-			deck.set(i, new Card(ranks[i%13], suits[i%4], values[i%13]));
+			deck.set(i, new Card(ranks[i%13], suits[i%4], values[i%13], i%4));
 		}
 	}
 	
