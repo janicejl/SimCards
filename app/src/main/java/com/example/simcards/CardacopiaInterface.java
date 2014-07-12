@@ -27,6 +27,7 @@ public class CardacopiaInterface extends Activity {
         String player2 = intent.getStringExtra("com.example.simcards.player2");
         String player3 = intent.getStringExtra("com.example.simcards.player3");
         String player4 = intent.getStringExtra("com.example.simcards.player4");
+        String[] players = {player1, player2, player3, player4};
 
         getWindow().requestFeature(Window.FEATURE_ACTION_BAR);
         getActionBar().hide();
@@ -37,7 +38,7 @@ public class CardacopiaInterface extends Activity {
         SCREEN_HEIGHT = size.y;
         SCREEN_WIDTH = size.x;
 		
-		GameView gameview = new GameView(this, player1, player2, player3, player4);
+		GameView gameview = new GameView(this, players);
 		gameview.setBackgroundColor(Color.parseColor("#002400"));
 		setContentView(gameview);
 	}

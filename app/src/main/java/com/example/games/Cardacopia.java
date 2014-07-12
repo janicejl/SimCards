@@ -78,7 +78,7 @@ public class Cardacopia extends Game {
         return countArr;
     }
 
-    private boolean hasValidMove() {
+    public boolean hasValidMove() {
         for (Card c : activePlayer.getCards()) {
             if (!activePlayer.getStatus()) {
                 return false;
@@ -91,7 +91,7 @@ public class Cardacopia extends Game {
         return false;
     }
 
-    private boolean isValidMove(Card c) {
+    public boolean isValidMove(Card c) {
         return compareCards(c, mTopCard) > 0;
     }
 
