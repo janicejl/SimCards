@@ -62,8 +62,21 @@ public class ToServer implements IOCallback {
                     }
                 }
             } else if (s.equals("movesPlayed")) {
-                JSONObject card = ((JSONObject)objects[0].getObject())
-            }
+                JSONObject card = ((JSONObject)objects[0].getObject("card"));
+                String rank = card.RANK;
+                String suit = card.SUITS;
+                String ranks[] = {
+                        "King", "Queen", "Jack", "Ten", "Nine", "Eight",
+                        "Seven", "Six", "Five", "Four", "Three", "Two", "Ace"
+                };
+                int values[] = {
+                        13, 12, 11, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1
+                };
+                for(int i = 0; i < ranks.length; i++) {
+                    if(rank.equals(ranks[i]))
+                }
+                Card newCard = new Card(rank, suit, 0, 0, 0, 0);
+            } else if (s.equals(""))
         } catch (JSONException e) {
             e.printStackTrace();
         }
