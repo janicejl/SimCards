@@ -240,7 +240,7 @@ public class GameView extends View {
             List<Card> cardList = mCurrentPlayer.getCards();
             for (int i = cardList.size() - 1 ; i >= 0 ; i--) {
                 if (cardList.get(i).containsPoint(p)) {
-                    return i;
+                  return i;
                 }
             }
             return -1;

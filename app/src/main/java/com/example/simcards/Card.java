@@ -22,7 +22,7 @@ public class Card {
 		return rank;
 	}
 	
-	String getSuit() {
+	public String getSuit() {
 		return suit;
 	}
 	
